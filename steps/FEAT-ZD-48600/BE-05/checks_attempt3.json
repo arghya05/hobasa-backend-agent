@@ -1,5 +1,5 @@
 {
   "failures": [
-    "G1 judge found an unsupported statement: \"(judge did not finish)\" (You've hit your session limit \u00b7 resets 6:30pm (Asia/Calcutta))"
+    "G1 judge found an unsupported statement: \"The constant and the threshold check each have a comment explaining why `bucket_for` is not used (tool:repo).\" (This contradicts the code in tool:repo and file:ap_aging/src/ap_aging/aging.py. Only the threshold check has such a comment (line 52: \"# Not bucket_for: bucket_)"
   ]
 }

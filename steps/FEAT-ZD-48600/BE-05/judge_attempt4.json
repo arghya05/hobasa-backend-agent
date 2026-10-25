@@ -1,27 +1,17 @@
 {
-  "unsupported": [
-    {
-      "text": "The tests (task.components BC-7, `tests/test_overdue.py`) are outside this step's write scope (`src/ap_aging/`, `docs/`, `README.md`) and belong to BE-06.\" / \"Those tests are written in BE-06, whose outcome is coverage of at least 90%.",
-      "why": "No input says what BE-06 is or what its outcome is. task.components assigns BC-7 to TSK-05/TSK-06 and never names BE-06, and the brief does not mention it. That the tests are outside this step's write scope is supported by record:brief. Naming the step that owns them, and saying its outcome is coverage of at least 90%, is invented. Open question CQ-BE-2 hedges this, but sections 0 and 3 state it as fact."
-    },
-    {
-      "text": "The tests planned in task.components section 4 for `tests/test_overdue.py` cover every missed line",
-      "why": "The output says one of the missed lines is `bucket_for`'s `return \"1-30\"` branch. None of the tests planned in task.components section 4 uses a day count from 1 to 29 through `bucket_for`. `test_existing_aging_unchanged` pins `bucket_for(30) == \"31-60\"`, and the `overdue_with_risk` tests never call `bucket_for` (DD-4). The cited source does not support 'every missed line'."
-    }
-  ],
+  "unsupported": [],
   "improvements": [
-    "The overall CI result is Fail because coverage is below the gate, but the brief says to run CI 'until it passes'. The brief's write scope (src/ap_aging/, docs/, README.md) excludes tests/, so CI cannot pass in this step. That conflict is real. It should go to the people at the gate as a scope conflict, not only as non-blocking CQ-BE-2: either widen the write scope to tests/test_overdue.py or confirm that the step that adds the tests is the one that must make CI pass.",
-    "Drop or hedge the BE-06 attribution, or cite the workbook or brief source that defines BE-06 and its outcome.",
-    "Correct the coverage note. Say that the planned tests cover the new functions' bodies but not `bucket_for`'s `return \"1-30\"` line, or add a 1-29-day `bucket_for` case to the plan. Coverage would still clear 90% with that one line missed.",
-    "Line 100 of the output, '[Tool result] [ap_aging] Sources compile', is a stray tool-output artifact. Remove it, or label it as the cited tool view.",
-    "The claims that `docs/aging.md` is new and that the README 'Purpose sentence' was extended cannot be checked from any provided source, because no prior README or docs state is in the tool view. Cite the diff, or say how it was established.",
-    "The row 'Python 3.9 syntax ... Met: the CI static checks report no issues' overstates what ci.py checks. ci.py's static checks cover print, eval and exec, bare except and line length only. Python 3.9 syntax is checked only indirectly, by compiling with /usr/bin/python3, whose version is not given."
+    "Q-1 is filed as non-blocking, but it records a real conflict: the brief says to run CI until it passes, and `tests/` is outside this step's write scope. The project CLAUDE.md says such a conflict must be a BLOCKING question to its owner. With the existing tests, the new code in `overdue_with_risk` (lines 47-63) and `overdue_rows_to_json` (line 71) is never run. By my statement count, coverage is about 71%, well under COVERAGE_MIN = 90.0.",
+    "The output does not say whether `/usr/bin/python3 ci.py` was actually run. The spine recorded only 'Sources compile', and the G9 hook blocks shell commands in BE-05. State plainly that CI was not run (and why), and that the coverage shortfall comes from reading the code, not from a CI result.",
+    "The header cites 'journey:feat.clarifications', and section 2.2 cites CL-X8 and CQ-6 from it. Both match hobasa-design-agent/outputs/FEAT-ZD-48600/feat.clarifications.md (lines 47 and 144). However, that file is not among the files the agent recorded as read, so record the context_get receipt to make the citation traceable.",
+    "The claim that the changes are uncommitted on `feature/story` is cited to record:brief and task.components, and neither shows the working-tree state. `.git/HEAD` confirms the branch. Since git commands are blocked, cite the evidence actually used, or say it was not checked.",
+    "The coverage row could name the specific uncovered paths (the whole of both new functions, plus `bucket_for`'s '1-30' return, which the existing tests already miss). That would help BE-06 size the test work."
   ],
   "scores": {
-    "correct": 4,
-    "complete": 3,
-    "grounded": 4,
+    "correct": 5,
+    "complete": 4,
+    "grounded": 5,
     "useful": 4
   },
-  "notes": "I checked the code in tool:repo (aging.py, __init__.py) against feat.design B3.1\u2013B3.2, task.components BC-1 to BC-6 and feat.stories AC-05/AC-06. The signatures, constants, paid skip, strict >30 threshold with no `bucket_for` call, KeyError on a missing vendor, Decimal quantize with no float, sort key, CT-1 key order, and the 1.4.0 \u2192 1.5.0 version step all match. The docs examples are arithmetically correct: 2026-08-11 to 2026-10-25 is 75 days and 2026-09-25 is 30 days. They use synthetic data as SE-4 requires. The CI descriptions agree with ci.py: the JSON report is on its last line, and the coverage gate is 90%. The coverage analysis also checks out: `__init__.py` is fully covered, and the missed lines are the new function bodies plus `return \\\"1-30\\\"`. Attempt 4 removes the figures that caused the G3 refusal and keeps only qualitative statements. Two statements are unsupported: the BE-06 attribution and its outcome, and the claim that the planned tests cover every missed line. The main quality gap is that the CI gate fails in this step, which the output reports honestly. I could not run git or CI because shell commands are blocked for this step (G9)."
+  "notes": "I checked every statement in task.code.md against these sources: the live ap_aging source (aging.py, which matches the tool view), README.md, docs/ap_aging.md, ci.py, ap_aging/CLAUDE.md, .git/HEAD (feature/story), task.components, feat.design B3, feat.stories STORY-05 and STORY-06, org.lessons, MEMORY.md and feat.clarifications (CL-X8, CQ-6).\n\nThe earlier refusal is fixed. Section 2.1 now describes the two comments separately and accurately: aging.py line 8 says an invoice exactly 30 days past due is not listed, and line 52 explains why `bucket_for` is not used.\n\nEvery other fact checks out:\n- Each code detail (A1-A6, I1-I3) and the four-step algorithm.\n- The version step 1.4.0 \u2192 1.5.0, with the number left open for the Developer (BC-2).\n- The DD-11 and CL-X8 wording 'for the lane to confirm'.\n- The test names and the count of eight, from task.components 3.3.\n- The AC mappings.\n- The CI gates (COVERAGE_MIN = 90.0; print/eval/exec/bare-except checks).\n- The decisions and lessons applied.\n- The docs examples: 2026-08-11 \u2192 2026-10-25 is 75 days and 2026-09-25 \u2192 2026-10-25 is 30 days, both correct.\n\nThe output claims no CI pass. Its statement that the coverage gate is not met follows directly from the code (the existing tests never call the new functions; I estimate about 71% coverage). The code matches the design, has the required comments and docstrings, and the documentation was updated as the brief asks.\n\nThe main weaknesses are process, not grounding:\n- CI cannot pass in this step.\n- That conflict is filed as a non-blocking question.\n- The output does not say whether CI was run."
 }

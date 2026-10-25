@@ -13,22 +13,38 @@
 - org.engineering_stack: `hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-05/org.engineering_stack.md`
 - org.lessons: `hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-05/org.lessons.md`
 
+## Tool results the spine recorded from the real tools in this step (a valid source; the section 'Tool results' at the end of an output file is written by the spine, not the agent)
+
+
+[Tool result] [ap_aging] Sources compile
+
 ## Other GitHub files the agent read (valid sources when cited as file:<repository>/<path>)
+- `~/.claude/projects/-Users-arghyamukherjee-Documents-automaiton-final-document-e2e-run-runs-run-20261025-205213-feat-zd-48600-workspace-ap-aging/c3f5b817-b8a5-4235-9246-0a0d0b6e4835/tool-results/hook-b9d43b20-7835-4c7f-8cf4-e38a0179b5c6-1-additionalContext.txt`
+- `hobasa-backend-agent/.claude/skills/backend-steps/SKILL.md`
+- `hobasa-backend-agent/CLAUDE.md`
 - `hobasa-backend-agent/outputs/FEAT-ZD-48600/task.code.md`
+- `ap-aging-sample/CLAUDE.md`
 - `ap-aging-sample/README.md`
 - `ap-aging-sample/ci.py`
-- `ap-aging-sample/docs/aging.md`
-- `ap-aging-sample/src/ap_aging/__init__.py`
+- `ap-aging-sample/docs/ap_aging.md`
 - `ap-aging-sample/src/ap_aging/aging.py`
+- `ap-forecast-sample/CLAUDE.md`
+- `ap-pipeline-sample/CLAUDE.md`
+- `ap-portal-sample/CLAUDE.md`
+- `hobasa-agentic-sdlc/CLAUDE.md`
+- `hobasa-agentic-sdlc/features/FEAT-ZD-48600/JOURNEY.md`
+- `hobasa-agentic-sdlc/memory/MEMORY.md`
+- `final_document/hobasa-claude-code-plugin/skills/backend-steps/SKILL.md`
+- `final_document/hobasa-claude-code-plugin/skills/grounded-output/SKILL.md`
 
 Shared memory and conventions: `memory/MEMORY.md` and `CLAUDE.md` in the SDLC repository.
 
 ## The step brief the agent was given (a valid source, cited as record:brief)
 
-Your previous result for this step was refused. Fix every point, rewrite the output files in full, and return the structured result again.
+Your previous result for this step was refused. Fix every point, rewrite the output files in full, and return the structured result again. The outputs describe the work itself: never mention earlier attempts, refusals or this review in them.
 
 ## Refusal reasons
-G3 numbers ['73.2', '38', '24', '45', '58', '64'] in "CI compiles, runs 3 tests with 0 failures and 0 errors, and reports no static issues. Coverage is 73" do not appear in tool:repo; org.engineering_stack
+G1 judge found an unsupported statement: "The constant and the threshold check each have a comment explaining why `bucket_for` is not used (tool:repo)." (This contradicts the code in tool:repo and file:ap_aging/src/ap_aging/aging.py. Only the threshold check has such a comment (line 52: "# Not bucket_for: bucket_)
 
 ## Step brief (unchanged except the attempt number)
 # Step BE-05: Coding (attempt 4) for FEAT-ZD-48600
@@ -40,21 +56,21 @@ G3 numbers ['73.2', '38', '24', '45', '58', '64'] in "CI compiles, runs 3 tests 
 - Gate (who approves this output): no gate: automated checks, the independent judge and sampled human evaluation
 
 ## Inputs (GitHub checkout; read them with Read, or context_get for a receipt)
-- task.components (Components, layers, sources or pipelines to change): `hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-05/task.components.md` (from hobasa-backend-agent/outputs/FEAT-ZD-48600/task.components.md at commit a126bc4)
+- task.components (Components, layers, sources or pipelines to change): `hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-05/task.components.md` (from hobasa-backend-agent/outputs/FEAT-ZD-48600/task.components.md at commit 7cb32bd)
 - feat.design (HLD, LLD and contracts): `hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-05/feat.design.md` (from hobasa-design-agent/outputs/FEAT-ZD-48600/feat.design.md at commit 722a98f)
 - feat.stories (Epics, stories and tasks with numbered AC, frame links, assumptions and open items (latest revision)): `hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-05/feat.stories.md` (from hobasa-requirement-agent/outputs/FEAT-ZD-48600/feat.stories.md at commit 0590ea4)
-- org.engineering_stack (Repositories, languages, versions and exact commands): `hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-05/org.engineering_stack.md` (from hobasa-agentic-sdlc/org/org.engineering_stack.md at commit a6b3e2a)
-- org.lessons (Approved lessons and eval cases): `hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-05/org.lessons.md` (from hobasa-agentic-sdlc/org/org.lessons.md at commit a6b3e2a)
+- org.engineering_stack (Repositories, languages, versions and exact commands): `hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-05/org.engineering_stack.md` (from hobasa-agentic-sdlc/org/org.engineering_stack.md at commit e8afce8)
+- org.lessons (Approved lessons and eval cases): `hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-05/org.lessons.md` (from hobasa-agentic-sdlc/org/org.lessons.md at commit e8afce8)
 - task.secrets_scope (Secrets granted for the task's environments (names only)): restricted, passed by reference only
 
 ## Outputs (write each file in full; the spine commits and pushes after evaluation and approval)
 - task.code (Code changes on the working branch): write `hobasa-backend-agent/outputs/FEAT-ZD-48600/task.code.md`
 
 ## Code
-Work in repository `ap-aging-sample` (Python 3.9 (standard library)). You may change only: src/ap_aging/, docs/, README.md. Run the CI yourself with `/usr/bin/python3 ci.py` from the repository root (or delegate to the ci-runner subagent) until it passes. Do not commit or push; the spine does. Document what you change: update the repository's README.md and docs/ (module overview, new functions with signatures, inputs, outputs and examples).
+Work in repository `ap-aging-sample` (Python 3.9 (standard library)). You may change only: src/ap_aging/, docs/, README.md. Understand before you change: the repository is indexed with CodeGraph. Before editing, use it (MCP tools codegraph_explore and codegraph_node with projectPath `ap-aging-sample`, or `codegraph explore <symbols>`, `codegraph impact <symbol>`, `codegraph callers <symbol>`) to read the exact source of what you change, its callers and callees and the blast radius. After editing, run `codegraph sync` and `codegraph affected <changed files>` to find the tests your change touches, and run them through the CI. Shell commands allowed in this step: `/usr/bin/python3 ci.py`, `git status`, `git diff`, `git log`, `codegraph explore`, `codegraph node`, `codegraph callers`, `codegraph callees`, `codegraph impact`, `codegraph affected`, `codegraph query`, `codegraph files`, `codegraph status`, `codegraph sync`. Run the CI yourself with `/usr/bin/python3 ci.py` from the repository root (or delegate to the ci-runner subagent) until it passes. Do not commit or push; the spine does. Document what you change: update the repository's README.md and docs/ (module overview, new functions with signatures, inputs, outputs and examples).
 
 ## How to work
-Decide the best way to do this step from the inputs and the workbook action, plan it (TodoWrite for multi-part work), then do it. Helper subagents you can delegate to: explorer, verifier, ci-runner (use the verifier before you finish when the output makes many factual statements). Use the shared memory (memory_search) for decisions and lessons. Connectors approved for you: api:osv (Known vulnerabilities for a dependency version (POST /v1/query with {"package":{"name":...,"ecosystem":"PyPI|npm"},"version":...})), api:pypi (Python package metadata: latest version, licence, release dates (GET /pypi/<package>/json)). Use one only when your inputs do not hold what you need; request a missing one with capability_request. You may also read any other file in the GitHub checkouts your step needs (for example other requirements when grouping, or code); cite it as file:<repository>/<path>.
+Decide the best way to do this step from the inputs and the workbook action, plan it (TodoWrite for multi-part work), then do it. Helper subagents you can delegate to: explorer, verifier, ci-runner (use the verifier before you finish when the output makes many factual statements). Use the shared memory (memory_search) for decisions and lessons. Connectors approved for you: api:osv (Known vulnerabilities for a dependency version (POST /v1/query with {"package":{"name":...,"ecosystem":"PyPI|npm"},"version":...})), api:pypi (Python package metadata: latest version, licence, release dates (GET /pypi/<package>/json)), mcp:codegraph (Code intelligence over the repository: a symbol's source, its callers and callees, the blast radius of a change and the tests it affects (codegraph_explore, codegraph_node and related tools; pass projectPath = the repository checkout)). Use one only when your inputs do not hold what you need; request a missing one with capability_request. You may also read any other file in the GitHub checkouts your step needs (for example other requirements when grouping, or code); cite it as file:<repository>/<path>.
 
 ## Tool view (cite as tool:repo)
 --- ap_aging/src/ap_aging/__init__.py ---
@@ -72,10 +88,8 @@ from decimal import Decimal
 from typing import Dict, Iterable, List
 
 BUCKETS = ("current", "1-30", "31-60", "61-90", "90+")
-
-# FEAT-ZD-48600: an invoice is overdue when strictly more than this many calendar days past due (exactly 30 is not).
+# An invoice is overdue when strictly more than this many calendar days past due (exactly 30 is not listed).
 OVERDUE_AFTER_DAYS = 30
-# Two-decimal quantum for money; Decimal only, never float (D-2026-044).
 TWO_PLACES = Decimal("0.01")
 
 
@@ -108,28 +122,45 @@ def aging_buckets(invoices: Iterable[Dict], as_of: date) -> Dict[str, Decimal]:
 
 def overdue_with_risk(invoices: Iterable[Dict], as_of: date, risk_by_vendor: Dict[str, str]) -> List[Dict]:
     """Unpaid invoices more than 30 calendar days past due as of as_of, as rows
-    {'id', 'vendor', 'days', 'amount' (Decimal, 2 dp), 'risk'}, sorted by days descending then id ascending."""
+    {'id', 'vendor', 'days', 'amount' (Decimal, 2 dp), 'risk'}, sorted by days descending then id ascending.
+
+    A vendor missing from risk_by_vendor gets risk 'unknown'. An overdue unpaid invoice without 'vendor' raises KeyError.
+    Pure: the inputs are not modified.
+    """
     rows = []
     for inv in invoices:
-        # Same paid test as aging_buckets: paid invoices are excluded (D-2026-050).
         if inv.get("paid"):
             continue
         days = days_past_due(inv["due_date"], as_of)
-        # Own threshold, not bucket_for: bucket_for(30) is "31-60", but exactly 30 days is not overdue here.
-        if days > OVERDUE_AFTER_DAYS:
-            # inv["vendor"] has no default on purpose: a missing vendor raises KeyError instead of hiding the row.
-            rows.append({"id": inv["id"], "vendor": inv["vendor"], "days": days,
-                         "amount": Decimal(inv["amount"]).quantize(TWO_PLACES),
-                         "risk": risk_by_vendor.get(inv["vendor"], "unknown")})
+        # Not bucket_for: bucket_for(30) is "31-60", but an invoice exactly 30 days past due must not be listed.
+        if days <= OVERDUE_AFTER_DAYS:
+            continue
+        rows.append({
+            "id": inv["id"],
+            "vendor": inv["vendor"],
+            "days": days,
+            "amount": Decimal(inv["amount"]).quantize(TWO_PLACES),
+            "risk": risk_by_vendor.get(inv["vendor"], "unknown"),
+        })
     rows.sort(key=lambda row: (-row["days"], row["id"]))
     return rows
 
 
 def overdue_rows_to_json(rows: Iterable[Dict]) -> str:
-    """CT-1: JSON array of {id, vendor, days (int), amount (two-decimal string), risk}; '[]' when empty."""
-    # Keys are written in CT-1 order; amount goes out as a string so no float ever touches it (L-011).
-    return json.dumps([{"id": r["id"], "vendor": r["vendor"], "days": int(r["days"]),
-                        "amount": str(Decimal(r["amount"]).quantize(TWO_PLACES)), "risk": r["risk"]} for r in rows])
+    """CT-1: JSON array of {id, vendor, days (int), amount (two-decimal string), risk}; '[]' when empty.
+
+    Rows keep their order. The amount goes Decimal -> str, never through float, so "1250.00" stays exact.
+    """
+    return json.dumps([
+        {
+            "id": r["id"],
+            "vendor": r["vendor"],
+            "days": int(r["days"]),
+            "amount": str(Decimal(r["amount"]).quantize(TWO_PLACES)),
+            "risk": r["risk"],
+        }
+        for r in rows
+    ])
 
 --- ap_aging/tests/__init__.py ---
 
@@ -167,4 +198,4 @@ if __name__ == "__main__":
     unittest.main()
 
 
-Finish with the structured result: approach, tools_used, claims (each citing an input item name, a tool view, api:<name>, mcp:<server>, file:<repository>/<path> for any other GitHub file you read, record:intake, record:owner_answer, record:memory or record:brief for this brief; a claim drawing on several sources lists them separated by ';'; every number must appear in what you cite), open questions (BLOCKING: only when you cannot finish), summary.
+Finish with the structured result: approach, tools_used, claims (each citing an input item name, a tool view, api:<name>, mcp:<server>, file:<repository>/<path> for any other GitHub file you read, record:intake, record:owner_answer, record:memory or record:brief for this brief; a claim drawing on several sources lists them separated by ';'; every number must appear in what you cite), open questions (anything missing or unclear: BLOCKING: <what you need and who should answer>; never assume), summary.

@@ -1,0 +1,23 @@
+{
+  "unsupported": [
+    {
+      "text": "The constant and the threshold check each have a comment explaining why `bucket_for` is not used (tool:repo).",
+      "why": "This contradicts the code in tool:repo and file:ap_aging/src/ap_aging/aging.py. Only the threshold check has such a comment (line 52: \"# Not bucket_for: bucket_for(30) is \\\"31-60\\\" ...\"). The constant's comment (line 8) reads \"# An invoice is overdue when strictly more than this many calendar days past due (exactly 30 is not listed).\" It does not mention `bucket_for` and does not say why it is not used."
+    }
+  ],
+  "improvements": [
+    "The brief makes CodeGraph exploration a requirement before editing, and `codegraph sync` / `codegraph affected` after editing. It also says to run `/usr/bin/python3 ci.py` until it passes. The output does not record that any of these were done. The spine recorded only \"[ap_aging] Sources compile\". The output should say plainly which required tool steps were not run and why, for example that the hook blocked shell commands, instead of saying nothing about them.",
+    "Q-1 states as fact that \"The CI coverage gate (90.0) is not met at the end of BE-05\", but no recorded CI run backs this. The code supports the conclusion: no test calls the two new functions, and their bodies are about 11 of roughly 40 statements. Even so, the output should either cite a recorded CI result or say the figure is inferred and not measured.",
+    "The brief says to run CI \"until it passes\", but the write scope (src/ap_aging/, docs/, README.md) excludes tests/. That makes it impossible to meet the 90% gate in this step. This is a contradiction between instructions. Under the SDLC CLAUDE.md rule (\"anything missing, unclear or contradictory becomes a BLOCKING question\"), Q-1 should be BLOCKING for the Developer, not non-blocking with an interim plan.",
+    "feat.clarifications is not one of this step's inputs, and the judge brief does not list it as a file the agent read. The output still cites journey:feat.clarifications, CL-X8 and CQ-6. Their content matches hobasa-design-agent/outputs/FEAT-ZD-48600/feat.clarifications.md, but the read is not recorded. Cite it by file path, or make sure the context_get receipt is recorded.",
+    "The carried open items leave out RA-2 (whether the third-party `coverage` package that ci.py imports is installed). task.components carries RA-2 as CR-3, and it bears directly on whether CI can run in this step.",
+    "The version is already set to 1.5.0 while Q-2 still asks the Developer to confirm it. Say explicitly in the step result that the version must be reverted or changed if the Developer picks a different number."
+  ],
+  "scores": {
+    "correct": 4,
+    "complete": 3,
+    "grounded": 4,
+    "useful": 4
+  },
+  "notes": "I checked task.code.md statement by statement against task.components, feat.design (B3.1\u2013B3.5, DD-4, DD-10, DD-11, NF-10), feat.stories (STORY-05/06 ACs), org.engineering_stack, org.lessons, record:memory, the tool:repo view, and the ap_aging files the agent read (aging.py, README.md, docs/ap_aging.md, ci.py, CLAUDE.md). I also confirmed with .git/HEAD that the branch is feature/story.\n\nThe previously refused material is gone from this attempt: the CodeGraph citations, the CI numbers (71.4, 39/12, 3 tests run), and the git diff stats. What remains is grounded:\n- A1\u2013A6 and I1\u2013I3 match the code exactly.\n- The overdue_with_risk and overdue_rows_to_json logic matches feat.design B3.2.\n- The README and the docs contents match the files.\n- The docs example arithmetic is correct: 2026-08-11 to 2026-10-25 is 75 days, and 2026-09-25 to 2026-10-25 is 30 days.\n- The AC traceability matches task.components 3.3.\n\nOne statement contradicts the code: it says the OVERDUE_AFTER_DAYS comment explains why bucket_for is not used, and it does not.\n\nOn completeness, the step's required tool use (CodeGraph before and after editing, a CI run until it passes) is not shown. The coverage-gate conflict with the write scope is marked non-blocking, although the conventions require a BLOCKING question.\n\nThe code itself meets the workbook action: it is commented, has docstrings, and the README and docs are updated."
+}
