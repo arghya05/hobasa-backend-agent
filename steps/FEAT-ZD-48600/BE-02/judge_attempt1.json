@@ -1,0 +1,16 @@
+{
+  "unsupported": [],
+  "improvements": [
+    "Section 4 says no access request goes \"to the infra team\". No source names an infra team as the place access requests go. Say \"no access request is raised\", or cite the source that names the recipient.",
+    "Line 68 holds a stray tool-output line: \"[Tool result] [ap_aging] Tool registry: no secrets required or granted (permission table)\". It looks like pasted raw tool output, not part of the document. Remove it, or turn it into a properly labelled tool:repo-access citation.",
+    "Section 5 calls TSK-04's acme-llm call \"the only external-provider touchpoint in the feature\". That is broader than the Backend lane needs, and feat.tasks also names an external release dependency for TSK-01 (feed v3 in production, PQ-6). Limit the claim to the Backend lane, or mention feed v3 as a non-secret external dependency of another lane.",
+    "Section 2 cites the repository search only as \"agent search in this step\", with no search terms. List the patterns searched (for example environ, getenv, requests, urllib, socket, secret, token, credential) so the gate can reproduce it. The evaluator's own search of ap_aging for these terms found no matches, so the claim holds."
+  ],
+  "scores": {
+    "correct": 5,
+    "complete": 5,
+    "grounded": 5,
+    "useful": 4
+  },
+  "notes": "I checked every factual statement against feat.tasks, the brief's tool view, ap_aging/ci.py and ap_aging/src/ap_aging/aging.py.\n\n- **Tasks and scope:** TSK-05 and TSK-06 match feat.tasks: story, repository, function names, files in budget, Decimal quantisation, the required `as_of`, and the rule that a transport would re-trigger DES-01. The Python 3.9 standard-library constraint (DD-1) also matches.\n- **Existing code:** aging.py imports only datetime, decimal and typing, as stated.\n- **CI:** ci.py runs compile, unittest, coverage and static checks, and reads no environment variables or credentials. Its only third-party import is `coverage`.\n- **Repository search:** my own case-insensitive search of the ap_aging checkout for environ, getenv, requests, urllib, socket, http, password, secret, token, api_key and credential returned no matches. This confirms the agent's search claim.\n- **Required vs granted:** \"None\" for both matches the tool:repo-access view (\"no secrets are required or granted for this repository\").\n- **TSK-04 note:** the reference to acme-llm and TQ-8 matches feat.tasks.\n\nI found no invented numbers, versions or entities. The output meets the workbook outcome: required and granted secrets are reconciled (none and none), and no access request is needed."
+}

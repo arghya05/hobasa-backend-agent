@@ -1,11 +1,11 @@
 # task.secrets_scope: FEAT-ZD-48600
 
-Secrets scope for the Backend tasks of FEAT-ZD-48600 (ZD-48600, "Show which overdue invoices belong to vendors that usually pay late"). This is BE-02 Access to secrets (attempt 3). It lists secret names only, never values. Every statement here rests on the step's contracted input (feat.tasks), the tool view (tool:repo-access) or the step brief (record:brief).
+Secrets scope for the Backend tasks of FEAT-ZD-48600 (ZD-48600, "Show which overdue invoices belong to vendors that usually pay late"). This is BE-02 Access to secrets (attempt 1). It lists secret names only, never values. Every statement here rests on the step's contracted input (feat.tasks), the tool view (tool:repo-access), the step brief (record:brief) or the ap_aging source read in this step (file:ap_aging/...).
 
 | Field | Value | Source |
 |---|---|---|
 | Trace ID | FEAT-ZD-48600 | record:brief |
-| Step | BE-02 Access to secrets (attempt 3) | record:brief |
+| Step | BE-02 Access to secrets (attempt 1) | record:brief |
 | Owner / gate | Developer / automated checks, independent judge, sampled human evaluation | record:brief |
 | Inputs | feat.tasks (from hobasa-design-agent/outputs/FEAT-ZD-48600/feat.tasks.md at commit b0fd4d2); org.permission_table (restricted, by reference only) | record:brief |
 | Repository | ap_aging | feat.tasks (section 1, TSK-05, TSK-06) |
@@ -24,8 +24,10 @@ Both tasks use only the Python 3.9 standard library and add no new technology (f
 **None.** Neither task calls a service, database, API, LLM provider or file store:
 
 - TSK-05 is a new pure function. `as_of` is a required parameter, and amounts are quantised in memory with `Decimal` (feat.tasks, TSK-05).
-- TSK-06 serialises the rows to a JSON string, and a transport layer is explicitly out of scope (feat.tasks, TSK-06).
+- TSK-06 serialises the rows to a JSON string. A transport layer is explicitly out of scope (feat.tasks, TSK-06).
 - The files in budget for both tasks are `src/ap_aging/aging.py`, `src/ap_aging/__init__.py` and `tests/test_overdue.py`. None of them is a configuration, credential or connection file (feat.tasks, TSK-05, TSK-06).
+- The existing code needs no secrets either. `src/ap_aging/aging.py` imports only `datetime`, `decimal` and `typing`. A search of the ap_aging checkout for environment-variable reads, credential keywords and network modules found no matches (file:ap_aging/src/ap_aging/aging.py; agent search in this step).
+- CI (`ci.py`) runs compile, unit tests, coverage and static checks locally. It reads no environment variables or credentials (file:ap_aging/ci.py).
 
 ## 3. Secrets granted (names only)
 
@@ -38,7 +40,7 @@ The permission table states that no secrets are required or granted for ap_aging
 
 ## 4. Access requests
 
-None raised. No secret is needed for TSK-05 or TSK-06, so no access request goes to the infra team. No excess access exists to flag for revocation.
+None raised. TSK-05 and TSK-06 need no secrets, so no access request goes to the infra team. There is no excess access to flag for revocation.
 
 ## 5. Out of scope (other lanes, noted for completeness)
 
@@ -58,6 +60,7 @@ None.
 |---|---|---|
 | Every Backend task assessed for secrets | Pass (TSK-05, TSK-06) | feat.tasks |
 | Required and granted secrets match | Pass (none and none) | tool:repo-access |
+| Existing code and CI need no secrets | Pass | file:ap_aging/src/ap_aging/aging.py; file:ap_aging/ci.py |
 | Secret values or personal data in this file | None, names only | — |
 | Blocking questions | None | — |
 
