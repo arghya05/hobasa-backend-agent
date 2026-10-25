@@ -1,0 +1,16 @@
+{
+  "unsupported": [],
+  "improvements": [
+    "Section 4 quotes the stop-and-ask condition (\"a required dependency or database change is missing\"), and line 5 says \"BE-04 can start\". Neither has a source in the output. Both come from the backend agent definition and skill (backend.md, backend-steps), not from the listed inputs. Cite that source so a reader can trace them.",
+    "Line 66 has an appended line, \"[Tool result] [ap_aging] No database in this repository's architecture; no migrations required\", with no section or citation. Its wording differs from the brief's tool view (\"ap_aging has no database; no migrations exist or are required\"). Remove it or fold it into section 3 under tool:repo-access, so there is one consistent statement of the tool view.",
+    "Section 1's Data row lists only the in-memory structures and CT-1 as the data in scope. The same feat.design A1 row also lists the new `paid_date` record key and the `'paid_date'` reject reason. They appear later in the 'New data shapes' row, but listing them in the Data row too would mirror the source exactly.",
+    "The output checks storage only for ap_aging, the Backend lane. Adding one line that DC-1 to DC-3 and CT-1 are all in-memory dicts or JSON strings (feat.design A3) would make clear that no upstream lane hands the Backend a database dependency."
+  ],
+  "scores": {
+    "correct": 5,
+    "complete": 4,
+    "grounded": 5,
+    "useful": 5
+  },
+  "notes": "I checked every statement against the brief, feat.tasks, feat.design, ap_aging/CLAUDE.md, aging.py and __init__.py. The cited sources support all of them:\n- the DD-1, A8 and TSK-06 quotes match the source text;\n- A1 lists storage, database and schema migration as out of scope;\n- NF-10 sets purity;\n- the TSK-05 and TSK-06 file budgets and 'Depends on' rows match feat.tasks;\n- aging.py imports only date, Decimal and typing;\n- __init__.py exports aging_buckets at version 1.4.0;\n- CLAUDE.md gives the repository layout and Python 3.9;\n- the tool:repo-access view matches.\n\nThis attempt also resolves the earlier refusal about citing ap_aging/CLAUDE.md, because that file is now among the files the agent read. The stop-and-ask wording and the BE-04 handoff trace to the agent definition and skill, so nothing is invented, but they have no citation. The trailing tool-result line differs slightly from the tool view's wording. Neither point blocks the output. The outcome (no database change required, none outstanding) is well supported and answers the workbook action."
+}

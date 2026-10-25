@@ -1,8 +1,7 @@
-Your previous result for this step was refused. Fix every point, rewrite the output files in full, and return the structured result again.
+Your previous result for this step was refused. Fix every point, rewrite the output files in full, and return the structured result again. The outputs describe the work itself: never mention earlier attempts, refusals or this review in them.
 
 ## Refusal reasons
-G2 claim cites file:ap_aging/src/ap_aging/aging.py but the agent never read that file in this session
-G2 claim cites file:ap_aging/src/ap_aging/__init__.py but the agent never read that file in this session
+G2 claim cites file:ap_aging/CLAUDE.md but the agent never read that file in this session
 
 ## Step brief (unchanged except the attempt number)
 # Step BE-03: Database changes (attempt 2) for FEAT-ZD-48600
