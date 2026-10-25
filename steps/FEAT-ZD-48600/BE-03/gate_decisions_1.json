@@ -1,0 +1,11 @@
+[
+  {
+    "role": "Developer",
+    "by": "sim.developer",
+    "decision": "approve",
+    "scores": null,
+    "comment": "automated checks and the independent judge passed",
+    "reason": null,
+    "simulated": true
+  }
+]
