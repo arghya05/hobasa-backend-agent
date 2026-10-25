@@ -1,0 +1,12 @@
+{
+  "failures": [
+    "G3 numbers ['73.2', '71', '24', '45', '58', '64'] in \"Before this step CI ran 3 tests with total coverage 73.2; aging.py was at 71% with lines 24, 45-58 a\" do not appear in tool:repo",
+    "G3 numbers ['24'] in \"After adding tests/test_overdue.py, CI ran 24 tests with 0 failures and 0 errors, total line coverag\" do not appear in tool:repo",
+    "G2 claim cites file:ap_aging/ci.py but the agent never read that file in this session",
+    "G2 claim cites file:ap_aging/tests/test_overdue.py but the agent never read that file in this session",
+    "G2 claim cites file:ap_aging/tests/test_overdue.py but the agent never read that file in this session",
+    "G2 claim cites file:ap_aging/tests/test_overdue.py but the agent never read that file in this session",
+    "G2 claim cites file:ap_aging/tests/test_overdue.py but the agent never read that file in this session",
+    "G2 claim cites file:ap_aging/tests/test_overdue.py but the agent never read that file in this session"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "unsupported": [],
+  "improvements": [
+    "The tool view gives the exact CI figures ('Unit tests: 24 run, 0 failing; coverage 100.0%'), but the output never states them. It says only 'above the gate of 90%' and 'fully covered', and sends readers to the spine's CI record. Quoting the tool:repo figures would make the coverage evidence for the workbook's \u226590% target explicit at the gate. The figures are correct: test_aging.py has 3 tests and test_overdue.py has 15 + 2 + 4.",
+    "The revision note says attempt 1 was refused because it 'quoted CI figures that no cited item contains' and 'cited files that had not been read'. The brief available to the judge lists only the latest refusal reasons (the ci.py citation), so this history cannot be checked against any source. Either drop it or keep the note to the refusal reasons the brief records.",
+    "The section 3 rows for Compile and Static checks ('Pass' / 'No issues' with the new tests) are not in the tool view, which reports only tests and coverage. They hold by implication: src/ is unchanged since task.code reported compile pass and no static issues, and the static checks scan only src/ap_aging. Saying this explicitly would make the 'CI passes' claim fully traceable.",
+    "TK-05.2 and SA-6 suggest putting the new tests in tests/test_aging.py, and the output explains why it used the separate file tests/test_overdue.py (SA-6 allows this). It could also note that the existing test_bucket_edges in test_aging.py still leaves the '1-30' branch untested there. The new file now covers that branch."
+  ],
+  "scores": {
+    "correct": 5,
+    "complete": 4,
+    "grounded": 5,
+    "useful": 4
+  },
+  "notes": "I checked every statement against the following sources: tests/test_overdue.py, the src/ap_aging code in the tool view, task.code, feat.stories and record:memory.\n\nThe AC-to-test mapping is accurate:\n- Every AC-05.x and AC-06.x has a matching test.\n- The [Pending] tags match feat.stories: PQ-2 on AC-05.6, TQ-9 on AC-05.10, TQ-3 on AC-06.x.\n- The per-test descriptions match the test code: day values 31/30/90/-5/0/1/75/42/40, amounts 980.5/15/1250.00/1E+3/12345678901234567.89, and the sort results.\n\nUQ-BE-1 is correct: the code reads inv[\"vendor\"] only inside the `days > OVERDUE_AFTER_DAYS` branch. The 'before' CI column matches task.code section 3. The 'after' result (all pass, full coverage including the bucket_for '1-30' branch) agrees with the tool view: 24 run, 0 failing, 100.0%. The test count also matches the test files: 3 + 21. Compile and static-check results follow from src/ being unchanged since task.code.\n\nRepository files: tests/ contains only __init__.py, test_aging.py and test_overdue.py. The test_aging.py contents in the tool view still match the original.\n\nThe output no longer cites ci.py as a source. It names ci.py only as the command it ran and for the JSON-last-line behaviour, which task.code also states.\n\nI could not rerun CI because the step hook blocks shell commands, so I relied on the tool view for the CI figures. I found no hallucinations that should block the output."
+}
