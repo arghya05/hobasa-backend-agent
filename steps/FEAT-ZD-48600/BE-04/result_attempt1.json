@@ -1,91 +1,82 @@
 {
   "structured": {
-    "approach": "I followed the backend-steps BE-04 procedure. First I read the six contracted inputs. feat.tasks and feat.design B3 were read in full. For feat.trd and feat.prd I searched only the Backend parts: IF-5, IF-6, C-6, C-7, F-10, T-8 to T-11, R-1, R-7, and AC-13 to AC-18. Then I read the ap_aging code: aging.py, __init__.py, ci.py, README.md and the file list. The step blocks shell commands, so I used Read and Glob, and checked that the files match the tool view. I mapped each Backend task (TSK-05, TSK-06) to the smallest set of components. The design adds new code only to aging.py and __init__.py, plus one new test file. It reuses days_past_due and the paid test from aging_buckets, does not use bucket_for, and adds no layer, transport, database or CI change. I wrote task.components.md and ran the verifier subagent. It found no wrong numbers and no contradictions. I fixed the five wording and citation gaps it reported: references to step IDs not in the inputs, a reason for the test-file split that was not in the source, and missing citations to feat.design B3.5.",
+    "approach": "I loaded the backend-steps skill for BE-04. I read the six contracted inputs: feat.tasks and feat.design in full, and the STORY-05/06 and IF-5/IF-6 sections of feat.stories, feat.trd and feat.prd through targeted search. I read the current ap_aging code from the tool view, and used codegraph to check who calls what. I also read ci.py and README.md. Shell commands are denied for BE-04, so I used Glob and Read instead. I mapped TSK-05 and TSK-06 onto the existing module and listed each layer as changed or not changed. Every addition is reduced to the smallest additive form, and signatures stay unchanged. A verifier subagent checked the draft against the sources. I fixed what it found: two internal contradictions (how many existing lines change, and which constants each function uses) and several unlabelled agent-judgement statements.",
     "tools_used": [
       "Skill:backend-steps",
       "Read",
       "Grep",
       "Glob",
+      "mcp:codegraph (codegraph_explore)",
       "Write",
       "Edit",
       "Agent:verifier"
     ],
     "claims": [
       {
-        "text": "The Backend lane has two tasks in ap_aging: TSK-05 (STORY-05, size M) and TSK-06 (STORY-06, size S).",
+        "text": "The Backend tasks in scope are TSK-05 (STORY-05, overdue_with_risk) and TSK-06 (STORY-06, overdue_rows_to_json), both in ap_aging.",
         "source": "feat.tasks; task.repo_access"
       },
       {
-        "text": "Only two source files change, src/ap_aging/aging.py and src/ap_aging/__init__.py, plus one new test file, tests/test_overdue.py.",
-        "source": "feat.tasks; feat.design"
+        "text": "ap_aging today has one logic module, aging.py, with BUCKETS, days_past_due, bucket_for and aging_buckets. __init__.py exports only aging_buckets, at version 1.4.0.",
+        "source": "tool:repo; mcp:codegraph"
       },
       {
-        "text": "In aging.py the change adds the constants OVERDUE_AFTER_DAYS = 30 and TWO_PLACES = Decimal(\"0.01\"), the new pure functions overdue_with_risk and overdue_rows_to_json, import json, and List typing. BUCKETS, days_past_due, bucket_for and aging_buckets stay unchanged.",
+        "text": "bucket_for(30) returns \"31-60\", so overdue_with_risk must never call bucket_for. It applies days > OVERDUE_AFTER_DAYS (30) itself.",
+        "source": "tool:repo; feat.trd; feat.design; feat.tasks"
+      },
+      {
+        "text": "Only additive changes are made to aging.py: import json, List added to the typing import on line 4, the constants OVERDUE_AFTER_DAYS = 30 and TWO_PLACES = Decimal(\"0.01\"), and the two new functions. BUCKETS, days_past_due, bucket_for and aging_buckets stay unchanged.",
+        "source": "feat.design; feat.tasks; tool:repo"
+      },
+      {
+        "text": "__init__.py exports overdue_with_risk and overdue_rows_to_json in __all__, and takes one minor version step from 1.4.0, owned by TSK-05.",
         "source": "feat.design; feat.tasks"
       },
       {
-        "text": "bucket_for(30) returns \"31-60\" because its \"1-30\" branch tests days < 30. overdue_with_risk must therefore apply days > 30 itself and never call bucket_for.",
-        "source": "tool:repo; feat.trd; feat.design"
-      },
-      {
-        "text": "overdue_with_risk reuses the existing days_past_due function and the inv.get(\"paid\") test that aging_buckets already uses, so no new date or paid logic is needed.",
-        "source": "tool:repo; feat.trd; record:memory"
-      },
-      {
-        "text": "A missing vendor raises KeyError naturally through inv[\"vendor\"], so no extra validation branch is needed.",
-        "source": "feat.trd; feat.tasks"
-      },
-      {
-        "text": "__init__.py today exports only aging_buckets with __version__ 1.4.0. It gains the two new exports and one minor version step, which TSK-05 owns.",
-        "source": "tool:repo; feat.tasks; task.repo_access"
-      },
-      {
-        "text": "No service, transport or database layer exists or is added. Adding a transport would re-trigger DES-01.",
-        "source": "feat.design; feat.trd; task.repo_access"
-      },
-      {
-        "text": "ci.py measures coverage on src/ap_aging with COVERAGE_MIN = 90.0 and runs static checks (no print, eval, exec or bare except; lines at most 140 characters). It needs no change for the new code.",
-        "source": "file:ap_aging/ci.py"
-      },
-      {
-        "text": "The existing tests in tests/test_aging.py check bucket_for with 0, 31, 90 and 91, but not 30. The new test_existing_aging_unchanged pins bucket_for(30) == \"31-60\".",
-        "source": "tool:repo; feat.tasks; feat.design"
-      },
-      {
-        "text": "Tests use AS_OF = date(2026, 10, 25) and due dates that give days of 30, 31, 42 and 75, with the tie on 42 ordering SYN-INV-002 before SYN-INV-003.",
+        "text": "Tests go in a new tests/test_overdue.py using AS_OF = date(2026, 10, 25), with days of 30, 31, 42 and 75. tests/test_aging.py stays unchanged.",
         "source": "feat.tasks; feat.design"
       },
       {
-        "text": "The README lists no functions, so it needs no change.",
+        "text": "No transport, service, database or dependency layer changes. CT-1 serialisation lives in ap_aging as overdue_rows_to_json.",
+        "source": "feat.design; task.repo_access"
+      },
+      {
+        "text": "CI discovers tests under tests/ and enforces COVERAGE_MIN = 90.0 plus static checks, so ci.py needs no change.",
+        "source": "file:ap_aging/ci.py"
+      },
+      {
+        "text": "README.md does not list functions, so it needs no update.",
         "source": "file:ap_aging/README.md"
       },
       {
-        "text": "Two differences between inputs were resolved without changing behaviour. The tests go in tests/test_overdue.py (feat.tasks), not tests/test_aging.py (feat.stories TK-05.2). The JSON amount uses the feat.design expression str(Decimal(r[\"amount\"]).quantize(TWO_PLACES)).",
-        "source": "feat.stories; feat.tasks; feat.design"
+        "text": "Money stays Decimal (never float), paid invoices are skipped with inv.get(\"paid\"), and the exactly-30-day boundary is tested.",
+        "source": "record:memory; feat.design"
       }
     ],
     "open_questions": [
-      "CQB-1 (non-blocking): the exact next ap_aging version number. Interim answer: one minor step from 1.4.0, proposed in the coding step for the lane to confirm.",
-      "CQB-2 (non-blocking, carried): TQ-3 (approval of CT-1 and who owns serialisation), TQ-9 (KeyError for a missing vendor), PQ-2 (sort tie-break), DQ-2 (rounding mode), RAQ-1 (one feature/story branch for both stories). The interim answers in feat.design, feat.trd and task.repo_access apply."
+      "BC-1 (non-blocking, Developer): the test file location differs between inputs. feat.stories TK-05.2 says tests/test_aging.py; the later feat.tasks section 2 says a new tests/test_overdue.py. I follow feat.tasks; feat.design B3.5 allows either.",
+      "BC-2 (non-blocking, Developer): no input states the exact ap_aging version after the minor step from 1.4.0. It will be proposed in BE-05 for confirmation.",
+      "Non-blocking, spine owner: the verifier reported that steps/FEAT-ZD-48600/BE-04/brief_attempt1.md gives task.repo_access at commit aac590a, while this step brief and the input file header give daae080. Please confirm which commit is authoritative.",
+      "Carried (non-blocking): RA-1 (one shared branch feature/story for STORY-05 and STORY-06), RA-2 (whether coverage is installed for /usr/bin/python3), TQ-1, TQ-3, TQ-9, PQ-2, DQ-2."
     ],
-    "summary": "I wrote task.components.md for the Backend lane, which covers TSK-05 and TSK-06 in ap_aging. The smallest change is to update aging.py and __init__.py and add a new test file, tests/test_overdue.py. aging.py gains two constants, two new pure functions (overdue_with_risk and overdue_rows_to_json) and two import changes. __init__.py gains the two exports and a minor version step from 1.4.0. The new code reuses days_past_due and the existing paid test, and it never calls bucket_for, because bucket_for(30) returns \"31-60\". No layer, transport, database, CI or README change is needed. The verifier subagent found no wrong numbers or contradictions; I fixed the five wording and citation gaps it reported. There are no blocking questions."
+    "summary": "task.components lists the smallest additive change set for ap_aging. aging.py gets: import json, List added to the typing import, the constants OVERDUE_AFTER_DAYS and TWO_PLACES, and the new functions overdue_with_risk (TSK-05) and overdue_rows_to_json (TSK-06). __init__.py gets the exports and one minor version step. A new tests/test_overdue.py holds the tests. No transport, database, dependency, CI or README change is needed, and existing functions and signatures stay untouched (bucket_for is never called). The verifier's findings are fixed. There are no blocking questions."
   },
   "meta": {
     "subtype": "success",
     "is_error": false,
-    "num_turns": 22,
-    "session_id": "34e91797-1ed9-4fd1-b714-70ab4178d48d",
-    "total_cost_usd": 1.6522506000000003,
+    "num_turns": 26,
+    "session_id": "0ea3267e-59bd-415a-8765-22c0688fa258",
+    "total_cost_usd": 1.6534179999999998,
     "permission_denials": [
       {
         "tool_name": "Bash",
-        "tool_use_id": "toolu_01RjwUJar3LbZMA7hY13vB9C",
+        "tool_use_id": "toolu_01FhksRw24UJU2VUQxnUB2cE",
         "tool_input": {
-          "command": "git status --short && git log --oneline -3 && ls -R src tests && cat ci.py && wc -l src/ap_aging/*.py tests/*.py",
-          "description": "Inspect ap_aging repo layout, CI script and line counts"
+          "command": "git ls-files && cat ci.py && wc -l src/ap_aging/*.py tests/*.py",
+          "description": "List repo files, show CI script and line counts"
         }
       }
     ],
-    "result": "{\"approach\":\"I followed the backend-steps BE-04 procedure. First I read the six contracted inputs. feat.tasks and feat.design B3 were read in full. For feat.trd and feat.prd I searched only the Backend parts: IF-5, IF-6, C-6, C-7, F-10, T-8 to T-11, R-1, R-7, and AC-13 to AC-18. Then I read the ap_aging code: aging.py, __init__.py, ci.py, README.md and the file list. The step blocks shell commands, so I used Read and Glob, and checked that the files match the tool view. I mapped each Backend task (TSK-05, TSK-06) to the smallest set of components. The design adds new code only to aging.py and __init__.py, plus one new test file. It reuses days_past_due and the paid test from aging_buckets, does not use bucket_for, and adds no layer, transport, database or CI change. I wrote task.components.md and ran the verifier subagent. It found no wrong numbers and no contradictions. I fixed the five wording and citation gaps it reported: references to step IDs not in the inputs, a reason for the test-file split that was not in the source, and missing citations to feat.design B3.5.\",\"tools_used\":[\"Skill:backend-steps\",\"Read\",\"Grep\",\"Glob\",\"Write\",\"Edit\",\"Agent:verifier\"],\"claims\":[{\"text\":\"The Backend lane has two tasks in ap_aging: TSK-05 (STORY-05, size M) and TSK-06 (STORY-06, size S).\",\"source\":\"feat.tasks; task.repo_access\"},{\"text\":\"Only two source files change, src/ap_aging/aging.py and src/ap_aging/__init__.py, plus one new test file, tests/test_overdue.py.\",\"source\":\"feat.tasks; feat.design\"},{\"text\":\"In aging.py the change adds the constants OVERDUE_AFTER_DAYS = 30 and TWO_PLACES = Decimal(\\\"0.01\\\"), the new pure functions overdue_with_risk and overdue_rows_to_json, import json, and List typing. BUCKETS, days_past_due, bucket_for and aging_buckets stay unchanged.\",\"source\":\"feat.design; feat.tasks\"},{\"text\":\"bucket_for(30) returns \\\"31-60\\\" because its \\\"1-30\\\" branch tests days < 30. overdue_with_risk must therefore apply days > 30 itself and never call bucket_for.\",\"source\":\"tool:repo; feat.trd; feat.design\"},{\"text\":\"overdue_with_risk reuses the existing days_past_due function and the inv.get(\\\"paid\\\") test that aging_buckets already uses, so no new date or paid logic is needed.\",\"source\":\"tool:repo; feat.trd; record:memory\"},{\"text\":\"A missing vendor raises KeyError naturally through inv[\\\"vendor\\\"], so no extra validation branch is needed.\",\"source\":\"feat.trd; feat.tasks\"},{\"text\":\"__init__.py today exports only aging_buckets with __version__ 1.4.0. It gains the two new exports and one minor version step, which TSK-05 owns.\",\"source\":\"tool:repo; feat.tasks; task.repo_access\"},{\"text\":\"No service, transport or database layer exists or is added. Adding a transport would re-trigger DES-01.\",\"source\":\"feat.design; feat.trd; task.repo_access\"},{\"text\":\"ci.py measures coverage on src/ap_aging with COVERAGE_MIN = 90.0 and runs static checks (no print, eval, exec or bare except; lines at most 140 characters). It needs no change for the new code.\",\"source\":\"file:ap_aging/ci.py\"},{\"text\":\"The existing tests in tests/test_aging.py check bucket_for with 0, 31, 90 and 91, but not 30. The new test_existing_aging_unchanged pins bucket_for(30) == \\\"31-60\\\".\",\"source\":\"tool:repo; feat.tasks; feat.design\"},{\"text\":\"Tests use AS_OF = date(2026, 10, 25) and due dates that give days of 30, 31, 42 and 75, with the tie on 42 ordering SYN-INV-002 before SYN-INV-003.\",\"source\":\"feat.tasks; feat.design\"},{\"text\":\"The README lists no functions, so it needs no change.\",\"source\":\"file:ap_aging/README.md\"},{\"text\":\"Two differences between inputs were resolved without changing behaviour. The tests go in tests/test_overdue.py (feat.tasks), not tests/test_aging.py (feat.stories TK-05.2). The JSON amount uses the feat.design expression str(Decimal(r[\\\"amount\\\"]).quantize(TWO_PLACES)).\",\"source\":\"feat.stories; feat.tasks; feat.design\"}],\"open_questions\":[\"CQB-1 (non-blocking): the exact next ap_aging version number. Interim answer: one minor step from 1.4.0, proposed in the coding step for the lane to confirm.\",\"CQB-2 (non-blocking, carried): TQ-3 (approval of CT-1 and who owns serialisation), TQ-9 (KeyError for a missing vendor), PQ-2 (sort tie-break), DQ-2 (rounding mode), RAQ-1 (one feature/story branch for both stories). The interim answers in feat.design, feat.trd and task.repo_access apply.\"],\"summary\":\"I wrote task.components.md for the Backend lane, which covers TSK-05 and TSK-06 in ap_aging. The smallest change is to update aging.py and __init__.py and add a new test file, tests/test_overdue.py. aging.py gains two constants, two new pure functions (overdue_with_risk and overdue_rows_to_json) and two import changes. __init__.py gains the two exports and a minor version step from 1.4.0. The new code reuses days_past_due and the existing paid test, and it never calls bucket_for, because bucket_for(30) returns \\\"31-60\\\". No layer, transport, database, CI or README change is needed. The verifier subagent found no wrong numbers or contradictions; I fixed the five wording and citation gaps it reported. There are no blocking questions.\"}"
+    "result": "{\"approach\":\"I loaded the backend-steps skill for BE-04. I read the six contracted inputs: feat.tasks and feat.design in full, and the STORY-05/06 and IF-5/IF-6 sections of feat.stories, feat.trd and feat.prd through targeted search. I read the current ap_aging code from the tool view, and used codegraph to check who calls what. I also read ci.py and README.md. Shell commands are denied for BE-04, so I used Glob and Read instead. I mapped TSK-05 and TSK-06 onto the existing module and listed each layer as changed or not changed. Every addition is reduced to the smallest additive form, and signatures stay unchanged. A verifier subagent checked the draft against the sources. I fixed what it found: two internal contradictions (how many existing lines change, and which constants each function uses) and several unlabelled agent-judgement statements.\",\"tools_used\":[\"Skill:backend-steps\",\"Read\",\"Grep\",\"Glob\",\"mcp:codegraph (codegraph_explore)\",\"Write\",\"Edit\",\"Agent:verifier\"],\"claims\":[{\"text\":\"The Backend tasks in scope are TSK-05 (STORY-05, overdue_with_risk) and TSK-06 (STORY-06, overdue_rows_to_json), both in ap_aging.\",\"source\":\"feat.tasks; task.repo_access\"},{\"text\":\"ap_aging today has one logic module, aging.py, with BUCKETS, days_past_due, bucket_for and aging_buckets. __init__.py exports only aging_buckets, at version 1.4.0.\",\"source\":\"tool:repo; mcp:codegraph\"},{\"text\":\"bucket_for(30) returns \\\"31-60\\\", so overdue_with_risk must never call bucket_for. It applies days > OVERDUE_AFTER_DAYS (30) itself.\",\"source\":\"tool:repo; feat.trd; feat.design; feat.tasks\"},{\"text\":\"Only additive changes are made to aging.py: import json, List added to the typing import on line 4, the constants OVERDUE_AFTER_DAYS = 30 and TWO_PLACES = Decimal(\\\"0.01\\\"), and the two new functions. BUCKETS, days_past_due, bucket_for and aging_buckets stay unchanged.\",\"source\":\"feat.design; feat.tasks; tool:repo\"},{\"text\":\"__init__.py exports overdue_with_risk and overdue_rows_to_json in __all__, and takes one minor version step from 1.4.0, owned by TSK-05.\",\"source\":\"feat.design; feat.tasks\"},{\"text\":\"Tests go in a new tests/test_overdue.py using AS_OF = date(2026, 10, 25), with days of 30, 31, 42 and 75. tests/test_aging.py stays unchanged.\",\"source\":\"feat.tasks; feat.design\"},{\"text\":\"No transport, service, database or dependency layer changes. CT-1 serialisation lives in ap_aging as overdue_rows_to_json.\",\"source\":\"feat.design; task.repo_access\"},{\"text\":\"CI discovers tests under tests/ and enforces COVERAGE_MIN = 90.0 plus static checks, so ci.py needs no change.\",\"source\":\"file:ap_aging/ci.py\"},{\"text\":\"README.md does not list functions, so it needs no update.\",\"source\":\"file:ap_aging/README.md\"},{\"text\":\"Money stays Decimal (never float), paid invoices are skipped with inv.get(\\\"paid\\\"), and the exactly-30-day boundary is tested.\",\"source\":\"record:memory; feat.design\"}],\"open_questions\":[\"BC-1 (non-blocking, Developer): the test file location differs between inputs. feat.stories TK-05.2 says tests/test_aging.py; the later feat.tasks section 2 says a new tests/test_overdue.py. I follow feat.tasks; feat.design B3.5 allows either.\",\"BC-2 (non-blocking, Developer): no input states the exact ap_aging version after the minor step from 1.4.0. It will be proposed in BE-05 for confirmation.\",\"Non-blocking, spine owner: the verifier reported that steps/FEAT-ZD-48600/BE-04/brief_attempt1.md gives task.repo_access at commit aac590a, while this step brief and the input file header give daae080. Please confirm which commit is authoritative.\",\"Carried (non-blocking): RA-1 (one shared branch feature/story for STORY-05 and STORY-06), RA-2 (whether coverage is installed for /usr/bin/python3), TQ-1, TQ-3, TQ-9, PQ-2, DQ-2.\"],\"summary\":\"task.components lists the smallest additive change set for ap_aging. aging.py gets: import json, List added to the typing import, the constants OVERDUE_AFTER_DAYS and TWO_PLACES, and the new functions overdue_with_risk (TSK-05) and overdue_rows_to_json (TSK-06). __init__.py gets the exports and one minor version step. A new tests/test_overdue.py holds the tests. No transport, database, dependency, CI or README change is needed, and existing functions and signatures stay untouched (bucket_for is never called). The verifier's findings are fixed. There are no blocking questions.\"}"
   }
 }

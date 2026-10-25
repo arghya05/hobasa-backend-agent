@@ -1,75 +1,74 @@
-<!-- input task.repo_access for BE-04: from hobasa-backend-agent/outputs/FEAT-ZD-48600/task.repo_access.md at commit aac590a, produced by BE-01 -->
+<!-- input task.repo_access for BE-04: from hobasa-backend-agent/outputs/FEAT-ZD-48600/task.repo_access.md at commit daae080, produced by BE-01 -->
 # task.repo_access: FEAT-ZD-48600
 
-Coding prerequisites for the Backend lane of FEAT-ZD-48600: is the repository available, does the Backend agent have write access, and is any other workspace (Databricks, database) needed? This is step BE-01. There is no gate: automated checks, the independent judge and sampled human evaluation review it (record:brief).
+BE-01 "Checking the coding prerequisites" (attempt 1). This file records whether the repository for the Backend tasks is available and whether the agent can write to it. It also records that no Databricks or other workspace is needed.
 
 | Field | Value | Source |
 |---|---|---|
 | Trace ID | FEAT-ZD-48600 | record:brief |
-| Step | BE-01 Checking the coding prerequisites | record:brief |
-| Inputs | feat.tasks (b0fd4d2), org.engineering_stack (3b03f15) | record:brief |
-| Backend tasks | TSK-05 (STORY-05) and TSK-06 (STORY-06), both in ap_aging | feat.tasks (section 1) |
-| Result | **Ready.** ap_aging is available locally, a feature branch exists, and the agent identity has write access. No Databricks or database is needed. No repository has to be created | tool:repo-access; org.engineering_stack |
+| Step | BE-01 Checking the coding prerequisites (attempt 1) | record:brief |
+| Owner / gate | Developer / automated checks, independent judge, sampled human evaluation | record:brief |
+| Inputs | feat.tasks (hobasa-design-agent, commit b0fd4d2), org.engineering_stack (hobasa-agentic-sdlc, commit e8afce8) | record:brief |
+| Backend tasks in scope | TSK-05 (STORY-05) and TSK-06 (STORY-06), both in ap_aging | feat.tasks (section 1) |
 
-## 1. Which repositories the Backend lane needs
+## 1. Result
 
-| Task | Story | Repository | Files in budget | Source |
-|---|---|---|---|---|
-| TSK-05 | STORY-05 | ap_aging | `src/ap_aging/aging.py`, `src/ap_aging/__init__.py` (export, version step), new `tests/test_overdue.py` | feat.tasks (TSK-05) |
-| TSK-06 | STORY-06 | ap_aging | `src/ap_aging/aging.py`, `src/ap_aging/__init__.py` (export), `tests/test_overdue.py` | feat.tasks (TSK-06) |
+**Outcome: met.** Repository ap_aging is available locally and the agent identity has write access. The working branch `feature/story` exists. No repository had to be created.
 
-The Backend lane uses only ap_aging. The other tasks belong to other lanes: TSK-01 and TSK-02 to Data Engineering (ap_pipeline), TSK-03 and TSK-04 to Data Science (ap_forecast), TSK-07 to Frontend (ap_portal) and TSK-08 to the Testing Agent (feat.tasks, section 1).
-
-## 2. Repository availability and write access
+## 2. Repository availability
 
 | Check | Result | Source |
 |---|---|---|
-| Repository exists locally | Yes: ap_aging, Python 3.9 (standard library) | tool:repo-access; file:ap_aging/CLAUDE.md |
-| Remote | `origin` points to the GitHub repository `ap-aging-sample` | file:ap_aging/.git/config |
-| Branches | `main` (released) and `dev` (integration) both exist; remote-tracking `origin/main`, `origin/dev` and `origin/feature/story` all point to commit `5d2cbb9` | file:ap_aging/.git/packed-refs; file:ap_aging/.git/refs/heads/main; file:ap_aging/.git/logs/refs/heads/dev; file:ap_aging/CLAUDE.md |
-| Feature branch | `feature/story`, created from `dev` at `5d2cbb9`; it is the checked-out branch (HEAD) | tool:repo-access; file:ap_aging/.git/HEAD; file:ap_aging/.git/logs/refs/heads/feature/story |
+| Repository needed for the Backend lane | ap_aging (TSK-05 and TSK-06) | feat.tasks (section 1, "Lane / repository") |
+| Repository exists and is checked out | Yes: available locally | tool:repo-access |
+| Repository creation needed | No; the repository already exists | tool:repo-access |
+| Language and test runner | Python 3.9, unittest | org.engineering_stack; file:ap_aging/CLAUDE.md |
+| CI command | `/usr/bin/python3 ci.py` (line coverage ≥ 90%, static checks in place of SonarQube) | org.engineering_stack; file:ap_aging/ci.py |
+| Remote | `origin` → `https://github.com/arghya05/ap-aging-sample.git` | file:ap_aging/.git/config |
+| Long-lived branches | `main` and `dev` exist, both at `5d2cbb9e6c611e032a678e86a16e99cf0eaa3814` | file:ap_aging/.git/refs/heads/main; file:ap_aging/.git/refs/heads/dev |
+| Current package version | `1.4.0` (matches feat.tasks section 2, which assigns the version step to TSK-05) | file:ap_aging/src/ap_aging/__init__.py; feat.tasks (section 2) |
+| Code paths the tasks name | `src/ap_aging/aging.py`, `src/ap_aging/__init__.py` and `tests/` exist. `tests/test_overdue.py` does not exist yet; TSK-05 creates it | file:ap_aging/src/ap_aging/aging.py; file:ap_aging/src/ap_aging/__init__.py; feat.tasks (TSK-05 "Files in budget") |
+
+## 3. Write access and working branch
+
+| Check | Result | Source |
+|---|---|---|
+| Working branch | `feature/story`, checked out (HEAD → `refs/heads/feature/story`) | file:ap_aging/.git/HEAD; tool:repo-access |
+| Branch base | Created from `dev` at `5d2cbb9` (reflog: created by the Hobasa Agent Spine at `5d2cbb9e6c611e032a678e86a16e99cf0eaa3814`) | tool:repo-access; file:ap_aging/.git/logs/refs/heads/feature/story |
 | Working tree | Clean | tool:repo-access |
-| Write access for the agent identity | Yes | tool:repo-access |
-| Repository creation needed | No: the repository already exists | tool:repo-access |
-| Databricks or other workspace | None used by this repository | tool:repo-access; org.engineering_stack |
-| Database | None. No repository uses a database | org.engineering_stack |
+| Agent identity write access | Yes | tool:repo-access |
+| Push to `origin` | Not tested in this step. The spine pushes, and pushing is not allowed in BE-01. `.git/config` has no upstream for `feature/story` yet; it has one only for `main` and `dev` | file:ap_aging/.git/config |
+| Branch convention | Feature branches per story; commit messages start with the story ID | org.engineering_stack; feat.tasks (section 2) |
 
-The Backend agent's guardrails allow branch, commit and PR actions, but no merge and no protected-main push (file:hobasa-backend-agent/.claude/agents/backend.md). This step does not push, so the write-access result rests on the tool view (tool:repo-access).
+## 4. Databricks, databases and other workspaces
 
-## 3. Repository baseline the coding steps start from
-
-| Item | Value | Source |
+| Check | Result | Source |
 |---|---|---|
-| Package version today | `1.4.0` in `src/ap_aging/__init__.py`. TSK-05 owns the minor version step | file:ap_aging/src/ap_aging/__init__.py; file:ap_aging/CLAUDE.md; feat.tasks (section 2) |
-| Public exports today | `__all__ = ["aging_buckets"]` | file:ap_aging/src/ap_aging/__init__.py |
-| Existing source module | `src/ap_aging/aging.py` holds `BUCKETS`, `days_past_due`, `bucket_for` and `aging_buckets`. TSK-05 and TSK-06 must leave all four unchanged | file:ap_aging/src/ap_aging/aging.py; feat.tasks (TSK-05 "Must not change") |
-| Existing tests | `tests/test_aging.py` (tests `days_past_due`, `bucket_for` and `aging_buckets`) | file:ap_aging/tests/test_aging.py |
-| New test file | `tests/test_overdue.py` is a new file for TSK-05 and TSK-06 | feat.tasks (section 2, TSK-05) |
-| CI command | `/usr/bin/python3 ci.py` | org.engineering_stack; file:ap_aging/README.md; file:ap_aging/CLAUDE.md |
-| CI checks | Compile, unit tests (unittest discovery in `tests/`), line coverage of at least 90% (`COVERAGE_MIN = 90.0`), and static checks that stand in for SonarQube: no `print`, `eval` or `exec`, no bare `except`, lines at most 140 characters | file:ap_aging/ci.py; org.engineering_stack |
-| Branch and commit convention | Feature branches per story (`feature/<story>`); commit messages start with the story ID (`STORY-05`, `STORY-06`), and the task ID may follow | org.engineering_stack; file:ap_aging/CLAUDE.md; feat.tasks (section 2); record:memory |
-| Repository rule | Keep existing public signatures; add new functions for new behaviour | file:ap_aging/CLAUDE.md; feat.tasks (section 2) |
+| Databricks workspace | Not used by ap_aging; no access needed | tool:repo-access; org.engineering_stack |
+| Database | No repository uses a database | org.engineering_stack |
 
-## 4. Prerequisite status
+## 5. Notes for later steps
 
-| Prerequisite | Status | Source |
-|---|---|---|
-| Repository available | Met | tool:repo-access |
-| Write access | Met (from the tool view) | tool:repo-access |
-| Feature branch from `dev` | Met (`feature/story`) | tool:repo-access |
-| Repository creation | Not needed | tool:repo-access |
-| Databricks or database access | Not needed | tool:repo-access; org.engineering_stack |
-| Secrets | Not part of this step; step BE-02 "Access to secrets" checks them | file:hobasa-backend-agent/.claude/skills/backend-steps/SKILL.md |
+- `ci.py` imports the third-party package `coverage`, but the repository memory describes the code as standard library only. That rule covers product code, not CI. Shell commands were not allowed in this step, so whether `coverage` is installed for `/usr/bin/python3` was not checked. It is raised as open question RA-2 (file:ap_aging/ci.py; file:ap_aging/CLAUDE.md).
+- The checked-out branch is called `feature/story` and is shared by TSK-05 (STORY-05) and TSK-06 (STORY-06). The convention is one feature branch per story, so this is raised as open question RA-1 (feat.tasks sections 1 and 2; org.engineering_stack).
 
-## 5. Open questions (non-blocking)
+## 6. Open questions (non-blocking)
 
-| ID | Question | Interim answer | Owner (proposed) |
+| ID | Question | Interim handling | Owner (proposed) |
 |---|---|---|---|
-| RAQ-1 | The convention is one feature branch per story (`feature/<story>`, file:ap_aging/CLAUDE.md), but the checkout has a single branch, `feature/story`, and the Backend lane has two stories (STORY-05, STORY-06). Should each story get its own branch, such as `feature/STORY-05`? | Use `feature/story` for both tasks. Prefix each commit with its own story ID so the commits still trace to their stories | Developer / spine owner |
-| RAQ-2 | `ci.py` imports the third-party `coverage` package, but the repository is described as standard library only (file:ap_aging/ci.py; file:ap_aging/CLAUDE.md). This step does not run commands, so it could not confirm that `coverage` is installed for `/usr/bin/python3` | Treat it as a CI tool dependency, not a runtime one. The first CI run in the coding steps confirms it | Infra team |
-| RAQ-3 | Write access comes from the tool view. Push permission is not tested in this step | Accept the tool view. The push in step BE-07 "Commit & Push" confirms it (file:hobasa-backend-agent/.claude/skills/backend-steps/SKILL.md) | Spine owner |
+| RA-1 | The spine created a single branch, `feature/story`. Should TSK-05 (STORY-05) and TSK-06 (STORY-06) share it, or should each story get its own `feature/<story>` branch? | Work on `feature/story` as provisioned. Commit messages carry the story ID | Developer |
+| RA-2 | Is the `coverage` package installed for `/usr/bin/python3`, which `ci.py` needs? This step could not run a shell command to check | Confirm before BE-06/BE-07 CI runs | Developer / infra team |
 
-No blocking questions.
+## 7. Validation check
+
+| Check | Result |
+|---|---|
+| Repository available | Pass |
+| Write access | Pass (tool:repo-access) |
+| Databricks / database prerequisites | Not applicable |
+| Blocking questions | None |
 
 
+<!-- tool results recorded by the spine -->
+## Tool results (recorded by the spine from the real tools)
 [Tool result] [ap_aging] Branch feature/story at 5d2cbb9; write access confirmed

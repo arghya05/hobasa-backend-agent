@@ -1,3 +1,5 @@
 {
-  "failures": []
+  "failures": [
+    "G1 judge found an unsupported statement: \"| Code read | `src/ap_aging/aging.py`, `src/ap_aging/__init__.py`, `tests/test_aging.py`, `tests/__init__.py`, `ci.py`, `README.md` | tool:repo; mcp:codegraph; \" (The citation does not support the statement. The agent's own record (result_attempt1.json) lists tools_used as Skill:backend-steps, Read, Grep, Glob, Write, Edi)"
+  ]
 }

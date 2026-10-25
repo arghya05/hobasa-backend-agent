@@ -1,58 +1,66 @@
-# BE-04 Identify the components/layers to be changed (Backend agent)
+# BE-04 · Identify the components/layers to be changed
 
-**Item:** FEAT-ZD-48600 · **status:** done
-**Trigger:** Previous outcome  
-**Action:** Read the existing code and understand it.
-Identify the components/layers that needs to be created/updated with minimum lines of code  
-**Outcome expected:** The list of components/layers needs to be created/updated with minimum lines of code
+**Agent:** Backend · **Item:** FEAT-ZD-48600 · **Status:** ✅ done
+**Approved by:** automated checks and the independent judge
 
-## Inputs (what the agent was given)
+**What this step does:** Read the existing code and understand it.
+Identify the components/layers that needs to be created/updated with minimum lines of code
 
-| Item | Prepared input (this repository) | Read from (producer in GitHub) | Commit | Produced by |
+**Expected outcome:** The list of components/layers needs to be created/updated with minimum lines of code
+
+**Started by:** Previous outcome
+
+## Input: what the agent received
+
+| # | Input | What it is | Produced by | Open |
 |---|---|---|---|---|
-| feat.tasks | hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-04/feat.tasks.md | hobasa-design-agent/outputs/FEAT-ZD-48600/feat.tasks.md | b0fd4d2 | DES-04 |
-| feat.stories | hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-04/feat.stories.md | hobasa-requirement-agent/outputs/FEAT-ZD-48600/feat.stories.md | 0590ea4 | REQ-08 |
-| feat.prd | hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-04/feat.prd.md | final_document/e2e-run/runs/run-20261025-111239-feat-zd-48600/workspace/agents/hobasa-requirement-agent/outputs/FEAT-ZD-48600/feat.prd.md | 908b58d | REQ-05 |
-| feat.trd | hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-04/feat.trd.md | hobasa-requirement-agent/outputs/FEAT-ZD-48600/feat.trd.md | 3637e51 | REQ-07 |
-| feat.design | hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-04/feat.design.md | hobasa-design-agent/outputs/FEAT-ZD-48600/feat.design.md | 722a98f | DES-02 |
-| task.repo_access | hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-04/task.repo_access.md | hobasa-backend-agent/outputs/FEAT-ZD-48600/task.repo_access.md | aac590a | BE-01 |
+| 1 | `feat.tasks` | Engineering tasks with goal, AC, dependencies and size budget | Design agent · DES-04 | [input copy](https://github.com/arghya05/hobasa-backend-agent/blob/main/inputs/FEAT-ZD-48600/BE-04/feat.tasks.md) · [original](https://github.com/arghya05/hobasa-design-agent/blob/main/outputs/FEAT-ZD-48600/feat.tasks.md) · [HTML](https://htmlpreview.github.io/?https://raw.githubusercontent.com/arghya05/hobasa-design-agent/main/docs/FEAT-ZD-48600/DES-04_feat-tasks.html) · [PDF](https://github.com/arghya05/hobasa-design-agent/blob/main/docs/FEAT-ZD-48600/DES-04_feat-tasks.pdf) |
+| 2 | `feat.stories` | Epics, stories and tasks with numbered AC, frame links, assumptions and open items (latest revision) | Requirement agent · REQ-08 | [input copy](https://github.com/arghya05/hobasa-backend-agent/blob/main/inputs/FEAT-ZD-48600/BE-04/feat.stories.md) · [original](https://github.com/arghya05/hobasa-requirement-agent/blob/main/outputs/FEAT-ZD-48600/feat.stories.md) · [HTML](https://htmlpreview.github.io/?https://raw.githubusercontent.com/arghya05/hobasa-requirement-agent/main/docs/FEAT-ZD-48600/REQ-08_feat-stories.html) · [PDF](https://github.com/arghya05/hobasa-requirement-agent/blob/main/docs/FEAT-ZD-48600/REQ-08_feat-stories.pdf) |
+| 3 | `feat.prd` | Approved PRD | Requirement agent · REQ-05 | [input copy](https://github.com/arghya05/hobasa-backend-agent/blob/main/inputs/FEAT-ZD-48600/BE-04/feat.prd.md) · [original](https://github.com/arghya05/hobasa-requirement-agent/blob/main/outputs/FEAT-ZD-48600/feat.prd.md) · [HTML](https://htmlpreview.github.io/?https://raw.githubusercontent.com/arghya05/hobasa-requirement-agent/main/docs/FEAT-ZD-48600/REQ-05_feat-prd.html) · [PDF](https://github.com/arghya05/hobasa-requirement-agent/blob/main/docs/FEAT-ZD-48600/REQ-05_feat-prd.pdf) |
+| 4 | `feat.trd` | Approved TRD | Requirement agent · REQ-07 | [input copy](https://github.com/arghya05/hobasa-backend-agent/blob/main/inputs/FEAT-ZD-48600/BE-04/feat.trd.md) · [original](https://github.com/arghya05/hobasa-requirement-agent/blob/main/outputs/FEAT-ZD-48600/feat.trd.md) · [HTML](https://htmlpreview.github.io/?https://raw.githubusercontent.com/arghya05/hobasa-requirement-agent/main/docs/FEAT-ZD-48600/REQ-07_feat-trd.html) · [PDF](https://github.com/arghya05/hobasa-requirement-agent/blob/main/docs/FEAT-ZD-48600/REQ-07_feat-trd.pdf) |
+| 5 | `feat.design` | HLD, LLD and contracts | Design agent · DES-02 | [input copy](https://github.com/arghya05/hobasa-backend-agent/blob/main/inputs/FEAT-ZD-48600/BE-04/feat.design.md) · [original](https://github.com/arghya05/hobasa-design-agent/blob/main/outputs/FEAT-ZD-48600/feat.design.md) · [HTML](https://htmlpreview.github.io/?https://raw.githubusercontent.com/arghya05/hobasa-design-agent/main/docs/FEAT-ZD-48600/DES-02_feat-design.html) · [PDF](https://github.com/arghya05/hobasa-design-agent/blob/main/docs/FEAT-ZD-48600/DES-02_feat-design.pdf) |
+| 6 | `task.repo_access` | Repository (and Databricks) availability and write access | Backend agent · BE-01 | [input copy](https://github.com/arghya05/hobasa-backend-agent/blob/main/inputs/FEAT-ZD-48600/BE-04/task.repo_access.md) · [original](https://github.com/arghya05/hobasa-backend-agent/blob/main/outputs/FEAT-ZD-48600/task.repo_access.md) · [HTML](https://htmlpreview.github.io/?https://raw.githubusercontent.com/arghya05/hobasa-backend-agent/main/docs/FEAT-ZD-48600/BE-01_task-repo_access.html) · [PDF](https://github.com/arghya05/hobasa-backend-agent/blob/main/docs/FEAT-ZD-48600/BE-01_task-repo_access.pdf) |
 
-Full brief per attempt: `brief_attempt<N>.md` (trigger event, owner answers, tool view, refusal reasons).
+The full brief the agent was given, attempt by attempt: `brief_attempt<N>.md` in this folder.
 
-## Outputs (what the agent produced)
+## Output: what the agent produced
 
-| Item | GitHub file |
-|---|---|
-| task.components | hobasa-backend-agent/outputs/FEAT-ZD-48600/task.components.md |
+| # | Output | What it is | Open |
+|---|---|---|---|
+| 1 | `task.components` | Components, layers, sources or pipelines to change | [Markdown](https://github.com/arghya05/hobasa-backend-agent/blob/main/outputs/FEAT-ZD-48600/task.components.md) · [HTML](https://htmlpreview.github.io/?https://raw.githubusercontent.com/arghya05/hobasa-backend-agent/main/docs/FEAT-ZD-48600/BE-04_task-components.html) · [PDF](https://github.com/arghya05/hobasa-backend-agent/blob/main/docs/FEAT-ZD-48600/BE-04_task-components.pdf) |
 
-## Code
-
-Repository `ap-aging-sample`, branch `feature/story`, commit `5d2cbb9`
+**Code:** repository [ap-aging-sample](https://github.com/arghya05/ap-aging-sample) · branch [feature/story](https://github.com/arghya05/ap-aging-sample/tree/feature/story) · commit [5d2cbb9](https://github.com/arghya05/ap-aging-sample/commit/5d2cbb9)
 
 ```
 no file changes in this step
 ```
 
+## Checks and approval
+
+| Attempt | Session | Problems found by the checks | Unsupported statements (judge) | Judge scores |
+|---|---|---|---|---|
+| 1 | new | 1 | 1 | {'correct': 4, 'complete': 5, 'grounded': 4, 'useful': 5} |
+| 2 | continued | 0 | 0 | {'correct': 5, 'complete': 5, 'grounded': 5, 'useful': 5} |
+
+Improvements the independent judge suggests (non-blocking):
+
+- Section 3.3 / line 104: 'tests/test_aging.py stays unchanged (feat.tasks section 2)' is an inference. Section 2 sends the TSK-05/TSK-06 tests to a new tests/test_overdue.py, but it never says test_aging.py is frozen. Label this as agent judgement, or cite TA-4 / the test-file split directly.
+- Section 1, Package interface row: 'Referenced by: Not named in any input' is unclear. Name what it is actually referenced by (the package import path, `from ap_aging import aging_buckets`), or write '—' as the other rows do.
+- Section 1, CI row: say that ci.py static checks scan only src/ap_aging/*.py, not tests/ (ci.py line 23). The 140-character and print rules then bind only the new code in aging.py; tests/test_overdue.py is held to them only by the convention in feat.tasks section 2.
+- Section 4 says 'ap_aging ... imports no other package'. feat.design Part C says no lane imports another lane's package. ap_aging does import standard-library packages (json, decimal, datetime, typing), so write 'no other lane's package'.
+- Point out that feat.stories TK-06.1 writes `str(amount.quantize(Decimal("0.01")))`, while feat.design B3.2 and feat.tasks write `str(Decimal(r["amount"]).quantize(TWO_PLACES))`. The output follows the design, which is correct. Recording the difference would stop BE-05 from reverting to the story form.
+
 ## How the agent worked
 
-- Approach: I followed the backend-steps BE-04 procedure. First I read the six contracted inputs. feat.tasks and feat.design B3 were read in full. For feat.trd and feat.prd I searched only the Backend parts: IF-5, IF-6, C-6, C-7, F-10, T-8 to T-11, R-1, R-7, and AC-13 to AC-18. Then I read the ap_aging code: aging.py, __init__.py, ci.py, README.md and the file list. The step blocks shell commands, so I used Read and Glob, and checked that the files match the tool view. I mapped each Backend task (TSK-05, TSK-06) to the smallest set of components. The design adds new code only to aging.py and __init__.py, plus one new test file. It reuses days_past_due and the paid test from aging_buckets, does not use bucket_for, and adds no layer, transport, database or CI change. I wrote task.components.md and ran the verifier subagent. It found no wrong numbers and no contradictions. I fixed the five wording and citation gaps it reported: references to step IDs not in the inputs, a reason for the test-file split that was not in the source, and missing citations to feat.design B3.5.
-- Tools used: Skill:backend-steps, Read, Grep, Glob, Write, Edit, Agent:verifier
-- Helper subagents: Agent
-- Connector calls: none
+- **Approach:** I used the backend-steps BE-04 procedure. I read feat.tasks and feat.design in full. I searched feat.stories, feat.trd and feat.prd for the STORY-05 and STORY-06 criteria and the IF-5, IF-6 and CT-1 contracts, and read task.repo_access. I worked through the existing ap_aging source and tests in the step's tool view, and read ci.py and README.md with Read. For each layer I recorded whether it changes. I reduced every change to its smallest additive form inside the existing module. The design was the authority, and statements no input makes are labelled as agent judgement. Every code fact cites the tool view (tool:repo) or the file read (file:ap_aging/ci.py, file:ap_aging/README.md). The output was rewritten in full.
+- **Tools used:** Skill:backend-steps, Read, Grep, Glob, Write
+- **Helper subagents:** Agent
+- **Connector calls:** none
 
-## Attempts (checks before any person saw the output)
+## Files in this folder (audit trail)
 
-| Attempt | Session | Checks failed | Judge unsupported | Judge scores |
-|---|---|---|---|---|
-| 1 | new | 0 | 0 | {'correct': 5, 'complete': 4, 'grounded': 5, 'useful': 5} |
-
-## Improvements the independent judge suggests (non-blocking, for the people at the gate)
-
-- Section 4, 'Missing vendor' row: the minimal design reaches `inv["vendor"]` only after the paid and `days > 30` filters, so `KeyError` is raised only for an unpaid, overdue invoice (feat.tasks TSK-05 notes, CL-BE4). AC-05.10 is worded for any invoice with no `vendor`. Say that `test_overdue_missing_vendor_raises` must use an unpaid invoice more than 30 days past due, and that a paid or not-yet-overdue invoice without `vendor` is skipped without an error.
-- Section 7 cites feat.design D3 for interim answers to 'PQ-2, TQ-3, TQ-9'. D3 gives interim answers for TQ-3 (DD-3) and TQ-9 (KeyError) but not for PQ-2. PQ-2's interim answer is feat.prd P-A1/P-A2, applied in IF-5.6 and feat.design B3.2. Add those citations.
-- CQB-2 calls PQ-2 the '(sort tie-break)'. In feat.prd, PQ-2 asks to confirm P-A1 to P-A4: the meaning of `days`, the tie-break, what counts as an invalid `paid_date`, and what the end-to-end test checks. Describe the whole question or say which part applies to the Backend lane.
-- AC-06.4 (no date field in CT-1) is not mapped to any test in the CMP-7 table. `test_rows_to_json` covers AC-06.1 to AC-06.3. State that the key-order or key-set assertion also covers AC-06.4.
-- Carry task.repo_access RAQ-2 into the prerequisites or open questions: `ci.py` imports the third-party `coverage` package, and nobody has confirmed it is installed. The coverage claim in section 4 depends on that CI run.
-- The workbook outcome asks for 'minimum lines of code', but the output never says roughly how many lines each component adds. Optionally add an approximate per-component line count, clearly labelled as agent judgement, so reviewers can check the 'minimum' claim.
-
-Details: `result_attempt<N>.json` (claims with sources), `checks_attempt<N>.json`, `judge_attempt<N>.json`.
+- `brief_attempt<N>.md`: the exact brief the agent received
+- `result_attempt<N>.json`: the agent's structured answer (approach, tools, claims with their sources, open questions)
+- `checks_attempt<N>.json`: what the automated guardrail checks found
+- `judge_attempt<N>.json`, `judge_brief_attempt<N>.md`: the independent judge
+- `outputs/`: the outputs as approved

@@ -1,0 +1,17 @@
+{
+  "unsupported": [],
+  "improvements": [
+    "Section 3.3 / line 104: 'tests/test_aging.py stays unchanged (feat.tasks section 2)' is an inference. Section 2 sends the TSK-05/TSK-06 tests to a new tests/test_overdue.py, but it never says test_aging.py is frozen. Label this as agent judgement, or cite TA-4 / the test-file split directly.",
+    "Section 1, Package interface row: 'Referenced by: Not named in any input' is unclear. Name what it is actually referenced by (the package import path, `from ap_aging import aging_buckets`), or write '\u2014' as the other rows do.",
+    "Section 1, CI row: say that ci.py static checks scan only src/ap_aging/*.py, not tests/ (ci.py line 23). The 140-character and print rules then bind only the new code in aging.py; tests/test_overdue.py is held to them only by the convention in feat.tasks section 2.",
+    "Section 4 says 'ap_aging ... imports no other package'. feat.design Part C says no lane imports another lane's package. ap_aging does import standard-library packages (json, decimal, datetime, typing), so write 'no other lane's package'.",
+    "Point out that feat.stories TK-06.1 writes `str(amount.quantize(Decimal(\"0.01\")))`, while feat.design B3.2 and feat.tasks write `str(Decimal(r[\"amount\"]).quantize(TWO_PLACES))`. The output follows the design, which is correct. Recording the difference would stop BE-05 from reverting to the story form."
+  ],
+  "scores": {
+    "correct": 5,
+    "complete": 5,
+    "grounded": 5,
+    "useful": 5
+  },
+  "notes": "I checked every statement against the six inputs, the four tool-view files (aging.py, __init__.py, tests/__init__.py, test_aging.py), ap_aging/ci.py, README.md, CLAUDE.md and the repository file listing. I found no unsupported statements.\n\nThe earlier refusal was about a 'mcp:codegraph' citation on the code-read row. That is fixed: the code-read row now cites only tool:repo, and ci.py and README.md cite their file: sources.\n\nThe code facts match the source:\n- `bucket_for` uses `days < 30`, so `bucket_for(30)` returns '31-60'.\n- The paid test is `inv.get(\"paid\")`.\n- The typing import has no `List`.\n- The version is 1.4.0 and `__all__` is `[\"aging_buckets\"]`.\n- The test names and `AS_OF = date(2026, 10, 25)` are as stated.\n- ci.py sets `COVERAGE_MIN = 90.0`, runs unittest discovery under tests/ and checks print/eval/exec, bare except and lines over 140 characters.\n- src/ap_aging contains only aging.py and __init__.py (confirmed by Glob).\n- README.md does not list any functions.\n\nThe design and task references are accurate: HC-6/HC-7, B3.1\u2013B3.5, DD-1/3/4/10/11, NF-1/2/3/4/10, CT-1, TSK-05/06 files in budget, the S/M size classes and the test names. The carried open questions also match their sources: RA-1/RA-2, TQ-1/3/9, PQ-2 (P-A1, P-A2), DQ-2 and the BC-1 test-file conflict between TK-05.2 and feat.tasks section 2.\n\nProposals that no input states (extending the existing import lines, no private helpers, the AC-06.4 assertion, the constant placement) are labelled as agent judgement. The output meets the workbook outcome: it gives a minimal, layer-by-layer list of the components to create or update, sized to the lines that change."
+}
