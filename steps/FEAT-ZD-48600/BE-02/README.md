@@ -1,51 +1,59 @@
-# BE-02 Access to secrets (Backend agent)
+# BE-02 · Access to secrets
 
-**Item:** FEAT-ZD-48600 · **status:** done
-**Trigger:** Task creation, or any re-entry trigger ¹  
-**Action:** Check the access for required secrets and ask for access as needed  
-**Outcome expected:** Secrets are available with access permissions
+**Agent:** Backend · **Item:** FEAT-ZD-48600 · **Status:** ✅ done
+**Approved by:** automated checks and the independent judge
 
-## Inputs (what the agent was given)
+**What this step does:** Check the access for required secrets and ask for access as needed
 
-| Item | Prepared input (this repository) | Read from (producer in GitHub) | Commit | Produced by |
+**Expected outcome:** Secrets are available with access permissions
+
+**Started by:** Task creation, or any re-entry trigger ¹
+
+## Input: what the agent received
+
+| # | Input | What it is | Produced by | Open |
 |---|---|---|---|---|
-| feat.tasks | hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-02/feat.tasks.md | hobasa-design-agent/outputs/FEAT-ZD-48600/feat.tasks.md | b0fd4d2 | DES-04 |
-| org.permission_table | not applicable or by reference | — | — | — |
+| 1 | `feat.tasks` | Engineering tasks with goal, AC, dependencies and size budget | Design agent · DES-04 | [input copy](https://github.com/arghya05/hobasa-backend-agent/blob/main/inputs/FEAT-ZD-48600/BE-02/feat.tasks.md) · [original](https://github.com/arghya05/hobasa-design-agent/blob/main/outputs/FEAT-ZD-48600/feat.tasks.md) · [HTML](https://htmlpreview.github.io/?https://raw.githubusercontent.com/arghya05/hobasa-design-agent/main/docs/FEAT-ZD-48600/DES-04_feat-tasks.html) · [PDF](https://github.com/arghya05/hobasa-design-agent/blob/main/docs/FEAT-ZD-48600/DES-04_feat-tasks.pdf) |
+| 2 | `org.permission_table` | Allowed tools, secrets and data per agent | — | not applicable for this item, or passed by reference |
 
-Full brief per attempt: `brief_attempt<N>.md` (trigger event, owner answers, tool view, refusal reasons).
+The full brief the agent was given, attempt by attempt: `brief_attempt<N>.md` in this folder.
 
-## Outputs (what the agent produced)
+## Output: what the agent produced
 
-| Item | GitHub file |
-|---|---|
-| task.secrets_scope | hobasa-backend-agent/outputs/FEAT-ZD-48600/task.secrets_scope.md |
+| # | Output | What it is | Open |
+|---|---|---|---|
+| 1 | `task.secrets_scope` | Secrets granted for the task's environments (names only) | [Markdown](https://github.com/arghya05/hobasa-backend-agent/blob/main/outputs/FEAT-ZD-48600/task.secrets_scope.md) · [HTML](https://htmlpreview.github.io/?https://raw.githubusercontent.com/arghya05/hobasa-backend-agent/main/docs/FEAT-ZD-48600/BE-02_task-secrets_scope.html) · [PDF](https://github.com/arghya05/hobasa-backend-agent/blob/main/docs/FEAT-ZD-48600/BE-02_task-secrets_scope.pdf) |
 
-## Code
-
-Repository `ap-aging-sample`, branch `feature/story`, commit `5d2cbb9`
+**Code:** repository [ap-aging-sample](https://github.com/arghya05/ap-aging-sample) · branch [feature/story](https://github.com/arghya05/ap-aging-sample/tree/feature/story) · commit [5d2cbb9](https://github.com/arghya05/ap-aging-sample/commit/5d2cbb9)
 
 ```
 no file changes in this step
 ```
 
+## Checks and approval
+
+| Attempt | Session | Problems found by the checks | Unsupported statements (judge) | Judge scores |
+|---|---|---|---|---|
+| 1 | new | 0 | 0 | {'correct': 5, 'complete': 4, 'grounded': 5, 'useful': 4} |
+
+Improvements the independent judge suggests (non-blocking):
+
+- Section 2 splits the tool view into rows for Local development, CI and dev/production. The tool view only says 'no secrets are required or granted for this repository'. It does not mention environments. Mark the per-environment split as the agent's reading of that repository-level statement.
+- The dev/production row says 'Not in this lane's scope: TSK-05 and TSK-06 add no deployed service'. This is an inference from the TSK-06 'no transport layer' rule, so mark it as agent judgement. Also note that a deployment-time secret check, if one is needed, would come up again at a later deployment step.
+- The repository-wide search claim (no environment-variable reads, secrets, tokens, passwords, API keys or network libraries) cites only aging.py and ci.py. List the files and paths that were searched, for example src/ and tests/, so the claim can be checked. An independent grep over ap_aging found no matches, which agrees with it.
+- The re-run rule in section 4 says BE-02 must run again if a transport, database or external call is added. Label it as a recommendation or agent judgement. feat.tasks only says a transport would re-trigger DES-01; it does not say BE-02 runs again.
+
 ## How the agent worked
 
-- Approach: I followed the BE-02 procedure in the backend-steps skill. First I read feat.tasks to find the Backend tasks: TSK-05 and TSK-06, both in ap_aging. For each one I checked whether it touches anything external: a service, database, API, LLM or transport. Next I compared the secrets those tasks need with what the tool:repo-access view of the permission table grants. The permission table itself is restricted, so I used it by reference only. To back up the "none required" finding I also searched the ap_aging checkout for environment-variable reads, credential keywords and network imports, and found no matches. I read aging.py and ci.py as well. A stale draft from an earlier run, labelled "attempt 3", was already at the output path. I read it and then replaced it with a complete attempt 1 draft. The replacement adds the code-level evidence and drops a stray tool-result line the old draft had at the end. I raised no access requests because nothing is needed. I did not use the verifier because the output makes only a few statements, and each one cites a source.
-- Tools used: Skill (backend-steps), Read, Grep, Glob, Write
-- Helper subagents: none
-- Connector calls: none
+- **Approach:** I read feat.tasks to find the Backend tasks for ap_aging: TSK-05 (overdue_with_risk) and TSK-06 (overdue_rows_to_json). Both are pure functions in src/ap_aging/aging.py, use only the standard library and add no transport layer. I compared that with the tool view for the restricted org.permission_table, which says no secrets are required or granted for ap_aging. To confirm the code needs none, I read aging.py and ci.py and searched the repository for environment-variable, secret, token, password, API-key and network patterns. Nothing matched. I wrote task.secrets_scope with secret names only. The scope is empty, there is no gap and no excess, and no access request was needed. I used no connectors because the inputs and the repository held all the facts.
+- **Tools used:** Skill (backend-steps), Read, Grep, Glob, Write
+- **Helper subagents:** none
+- **Connector calls:** none
 
-## Attempts (checks before any person saw the output)
+## Files in this folder (audit trail)
 
-| Attempt | Session | Checks failed | Judge unsupported | Judge scores |
-|---|---|---|---|---|
-| 1 | new | 0 | 0 | {'correct': 5, 'complete': 5, 'grounded': 5, 'useful': 4} |
-
-## Improvements the independent judge suggests (non-blocking, for the people at the gate)
-
-- Section 4 says no access request goes "to the infra team". No source names an infra team as the place access requests go. Say "no access request is raised", or cite the source that names the recipient.
-- Line 68 holds a stray tool-output line: "[Tool result] [ap_aging] Tool registry: no secrets required or granted (permission table)". It looks like pasted raw tool output, not part of the document. Remove it, or turn it into a properly labelled tool:repo-access citation.
-- Section 5 calls TSK-04's acme-llm call "the only external-provider touchpoint in the feature". That is broader than the Backend lane needs, and feat.tasks also names an external release dependency for TSK-01 (feed v3 in production, PQ-6). Limit the claim to the Backend lane, or mention feed v3 as a non-secret external dependency of another lane.
-- Section 2 cites the repository search only as "agent search in this step", with no search terms. List the patterns searched (for example environ, getenv, requests, urllib, socket, secret, token, credential) so the gate can reproduce it. The evaluator's own search of ap_aging for these terms found no matches, so the claim holds.
-
-Details: `result_attempt<N>.json` (claims with sources), `checks_attempt<N>.json`, `judge_attempt<N>.json`.
+- `brief_attempt<N>.md`: the exact brief the agent received
+- `result_attempt<N>.json`: the agent's structured answer (approach, tools, claims with their sources, open questions)
+- `checks_attempt<N>.json`: what the automated guardrail checks found
+- `judge_attempt<N>.json`, `judge_brief_attempt<N>.md`: the independent judge
+- `outputs/`: the outputs as approved

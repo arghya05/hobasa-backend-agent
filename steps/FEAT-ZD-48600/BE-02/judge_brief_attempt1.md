@@ -9,10 +9,25 @@
 ## Inputs the agent was given
 - feat.tasks: `hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-02/feat.tasks.md`
 
+## Tool results the spine recorded from the real tools in this step (a valid source; the section 'Tool results' at the end of an output file is written by the spine, not the agent)
+
+
+[Tool result] [ap_aging] Tool registry: no secrets required or granted (permission table)
+
 ## Other GitHub files the agent read (valid sources when cited as file:<repository>/<path>)
-- `hobasa-backend-agent/outputs/FEAT-ZD-48600/task.secrets_scope.md`
+- `hobasa-backend-agent/.claude/skills/backend-steps/SKILL.md`
+- `hobasa-backend-agent/CLAUDE.md`
+- `ap-aging-sample/CLAUDE.md`
 - `ap-aging-sample/ci.py`
 - `ap-aging-sample/src/ap_aging/aging.py`
+- `ap-forecast-sample/CLAUDE.md`
+- `ap-pipeline-sample/CLAUDE.md`
+- `ap-portal-sample/CLAUDE.md`
+- `hobasa-agentic-sdlc/CLAUDE.md`
+- `hobasa-agentic-sdlc/features/FEAT-ZD-48600/JOURNEY.md`
+- `hobasa-agentic-sdlc/memory/MEMORY.md`
+- `final_document/hobasa-claude-code-plugin/skills/backend-steps/SKILL.md`
+- `final_document/hobasa-claude-code-plugin/skills/grounded-output/SKILL.md`
 
 Shared memory and conventions: `memory/MEMORY.md` and `CLAUDE.md` in the SDLC repository.
 
@@ -35,7 +50,7 @@ Shared memory and conventions: `memory/MEMORY.md` and `CLAUDE.md` in the SDLC re
 
 
 ## How to work
-Decide the best way to do this step from the inputs and the workbook action, plan it (TodoWrite for multi-part work), then do it. Helper subagents you can delegate to: explorer, verifier (use the verifier before you finish when the output makes many factual statements). Use the shared memory (memory_search) for decisions and lessons. Connectors approved for you: api:osv (Known vulnerabilities for a dependency version (POST /v1/query with {"package":{"name":...,"ecosystem":"PyPI|npm"},"version":...})), api:pypi (Python package metadata: latest version, licence, release dates (GET /pypi/<package>/json)). Use one only when your inputs do not hold what you need; request a missing one with capability_request. You may also read any other file in the GitHub checkouts your step needs (for example other requirements when grouping, or code); cite it as file:<repository>/<path>.
+Decide the best way to do this step from the inputs and the workbook action, plan it (TodoWrite for multi-part work), then do it. Helper subagents you can delegate to: explorer, verifier (use the verifier before you finish when the output makes many factual statements). Use the shared memory (memory_search) for decisions and lessons. Connectors approved for you: api:osv (Known vulnerabilities for a dependency version (POST /v1/query with {"package":{"name":...,"ecosystem":"PyPI|npm"},"version":...})), api:pypi (Python package metadata: latest version, licence, release dates (GET /pypi/<package>/json)), mcp:codegraph (Code intelligence over the repository: a symbol's source, its callers and callees, the blast radius of a change and the tests it affects (codegraph_explore, codegraph_node and related tools; pass projectPath = the repository checkout)). Use one only when your inputs do not hold what you need; request a missing one with capability_request. You may also read any other file in the GitHub checkouts your step needs (for example other requirements when grouping, or code); cite it as file:<repository>/<path>.
 
 ## Tool view (cite as tool:repo-access)
 Tool registry for ap_aging: no secrets are required or granted for this repository (permission table).
