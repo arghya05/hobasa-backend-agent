@@ -1,54 +1,71 @@
 # task.repo_access: FEAT-ZD-48600
 
-Repository availability and write access for the Backend lane of FEAT-ZD-48600 (ZD-48600, "Show which overdue invoices belong to vendors that usually pay late"). This is BE-01 Checking the coding prerequisites (attempt 1).
+BE-01 "Checking the coding prerequisites" (attempt 1). This file records whether the repository for the Backend tasks is available and whether the agent can write to it. It also records that no Databricks or other workspace is needed.
 
 | Field | Value | Source |
 |---|---|---|
 | Trace ID | FEAT-ZD-48600 | record:brief |
 | Step | BE-01 Checking the coding prerequisites (attempt 1) | record:brief |
 | Owner / gate | Developer / automated checks, independent judge, sampled human evaluation | record:brief |
-| Inputs | feat.tasks (b0fd4d2), org.engineering_stack (76d03ce) | record:brief |
+| Inputs | feat.tasks (hobasa-design-agent, commit b0fd4d2), org.engineering_stack (hobasa-agentic-sdlc, commit e8afce8) | record:brief |
 | Backend tasks in scope | TSK-05 (STORY-05) and TSK-06 (STORY-06), both in ap_aging | feat.tasks (section 1) |
 
 ## 1. Result
 
-**Outcome: the repository is available with write access.** No repository needs to be created. No Databricks workspace or database is needed.
+**Outcome: met.** Repository ap_aging is available locally and the agent identity has write access. The working branch `feature/story` exists. No repository had to be created.
+
+## 2. Repository availability
 
 | Check | Result | Source |
 |---|---|---|
-| Repository the Backend tasks need | `ap_aging` (TSK-05, TSK-06; Backend lane) | feat.tasks (section 1) |
-| Repository available | Yes, checked out locally | tool:repo-access |
-| Repository creation needed | No; the repository exists | tool:repo-access |
-| Working branch | `feature/story`, created from `dev` at commit `5d2cbb9` | tool:repo-access |
-| Write access for the agent identity | Yes; working tree clean | tool:repo-access |
-| Branch model | `main` (released), `dev` (integration), `feature/<story>` | file:ap_aging/CLAUDE.md; org.engineering_stack; feat.tasks (section 2) |
-| Databricks / database | None used by this repository | tool:repo-access; org.engineering_stack |
+| Repository needed for the Backend lane | ap_aging (TSK-05 and TSK-06) | feat.tasks (section 1, "Lane / repository") |
+| Repository exists and is checked out | Yes: available locally | tool:repo-access |
+| Repository creation needed | No; the repository already exists | tool:repo-access |
+| Language and test runner | Python 3.9, unittest | org.engineering_stack; file:ap_aging/CLAUDE.md |
+| CI command | `/usr/bin/python3 ci.py` (line coverage ≥ 90%, static checks in place of SonarQube) | org.engineering_stack; file:ap_aging/ci.py |
+| Remote | `origin` → `https://github.com/arghya05/ap-aging-sample.git` | file:ap_aging/.git/config |
+| Long-lived branches | `main` and `dev` exist, both at `5d2cbb9e6c611e032a678e86a16e99cf0eaa3814` | file:ap_aging/.git/refs/heads/main; file:ap_aging/.git/refs/heads/dev |
+| Current package version | `1.4.0` (matches feat.tasks section 2, which assigns the version step to TSK-05) | file:ap_aging/src/ap_aging/__init__.py; feat.tasks (section 2) |
+| Code paths the tasks name | `src/ap_aging/aging.py`, `src/ap_aging/__init__.py` and `tests/` exist. `tests/test_overdue.py` does not exist yet; TSK-05 creates it | file:ap_aging/src/ap_aging/aging.py; file:ap_aging/src/ap_aging/__init__.py; feat.tasks (TSK-05 "Files in budget") |
 
-## 2. Repository facts the coding steps rely on
+## 3. Write access and working branch
 
-| Item | Value | Source |
+| Check | Result | Source |
 |---|---|---|
-| Language | Python 3.9 (standard library), tests with `unittest` | org.engineering_stack; file:ap_aging/CLAUDE.md |
-| Source and tests | `src/ap_aging/` (`__init__.py`, `aging.py`); `tests/` (`__init__.py`, `test_aging.py`) | file:ap_aging/src/ap_aging/__init__.py; file:ap_aging/ci.py; file:ap_aging/CLAUDE.md |
-| Current version | `1.4.0` in `src/ap_aging/__init__.py`; the version step is owned by TSK-05 | file:ap_aging/src/ap_aging/__init__.py; feat.tasks (section 2) |
-| Current public exports | `__all__ = ["aging_buckets"]` | file:ap_aging/src/ap_aging/__init__.py |
-| CI command | `/usr/bin/python3 ci.py` | org.engineering_stack; file:ap_aging/CLAUDE.md |
-| CI gate | Compile, unit tests, line coverage at least 90%, static checks standing in for SonarQube (no `print`, `eval`, `exec`, no bare `except`, lines at most 140 characters) | file:ap_aging/ci.py; org.engineering_stack |
-| Files in the TSK-05 / TSK-06 budget | `src/ap_aging/aging.py`, `src/ap_aging/__init__.py`, new `tests/test_overdue.py` | feat.tasks (TSK-05, TSK-06) |
-| Commit messages | Start with the story ID (for example `STORY-05`); the task ID may follow | org.engineering_stack; feat.tasks (section 2) |
+| Working branch | `feature/story`, checked out (HEAD → `refs/heads/feature/story`) | file:ap_aging/.git/HEAD; tool:repo-access |
+| Branch base | Created from `dev` at `5d2cbb9` (reflog: created by the Hobasa Agent Spine at `5d2cbb9e6c611e032a678e86a16e99cf0eaa3814`) | tool:repo-access; file:ap_aging/.git/logs/refs/heads/feature/story |
+| Working tree | Clean | tool:repo-access |
+| Agent identity write access | Yes | tool:repo-access |
+| Push to `origin` | Not tested in this step. The spine pushes, and pushing is not allowed in BE-01. `.git/config` has no upstream for `feature/story` yet; it has one only for `main` and `dev` | file:ap_aging/.git/config |
+| Branch convention | Feature branches per story; commit messages start with the story ID | org.engineering_stack; feat.tasks (section 2) |
 
-## 3. Observations (non-blocking)
+## 4. Databricks, databases and other workspaces
 
-1. **Branch name.** The prepared branch is `feature/story` (tool:repo-access). The convention is `feature/<story>` (file:ap_aging/CLAUDE.md; feat.tasks section 2), and the Backend lane carries two stories, STORY-05 and STORY-06 (feat.tasks section 1). Assumption: both tasks are built on the prepared branch `feature/story`, with commits prefixed by their own story ID. See RAQ-1.
-2. **CI dependency outside the standard library.** `ci.py` imports `coverage` (file:ap_aging/ci.py), while product code is standard library only (file:ap_aging/CLAUDE.md). This step could not run shell commands, so whether `coverage` is installed for `/usr/bin/python3` was not checked here; the CI run in a later step will show it. See RAQ-2.
-3. **No shell in this step.** Availability, branch and write access are taken from the step's tool view (tool:repo-access); file layout was confirmed by reading the checkout.
+| Check | Result | Source |
+|---|---|---|
+| Databricks workspace | Not used by ap_aging; no access needed | tool:repo-access; org.engineering_stack |
+| Database | No repository uses a database | org.engineering_stack |
 
-## 4. Open questions (all non-blocking)
+## 5. Notes for later steps
 
-| ID | Question | Interim answer | Owner (proposed) |
+- `ci.py` imports the third-party package `coverage`, but the repository memory describes the code as standard library only. That rule covers product code, not CI. Shell commands were not allowed in this step, so whether `coverage` is installed for `/usr/bin/python3` was not checked. It is raised as open question RA-2 (file:ap_aging/ci.py; file:ap_aging/CLAUDE.md).
+- The checked-out branch is called `feature/story` and is shared by TSK-05 (STORY-05) and TSK-06 (STORY-06). The convention is one feature branch per story, so this is raised as open question RA-1 (feat.tasks sections 1 and 2; org.engineering_stack).
+
+## 6. Open questions (non-blocking)
+
+| ID | Question | Interim handling | Owner (proposed) |
 |---|---|---|---|
-| RAQ-1 | Should the Backend lane use the prepared `feature/story` branch for both STORY-05 and STORY-06, or a branch per story (`feature/STORY-05`, `feature/STORY-06`)? | Use `feature/story`; commit prefixes keep each change traced to its story | Developer |
-| RAQ-2 | Is the `coverage` package available to `/usr/bin/python3` on the CI runner? | Assumed yes; confirmed by the first CI run | Infra team |
+| RA-1 | The spine created a single branch, `feature/story`. Should TSK-05 (STORY-05) and TSK-06 (STORY-06) share it, or should each story get its own `feature/<story>` branch? | Work on `feature/story` as provisioned. Commit messages carry the story ID | Developer |
+| RA-2 | Is the `coverage` package installed for `/usr/bin/python3`, which `ci.py` needs? This step could not run a shell command to check | Confirm before BE-06/BE-07 CI runs | Developer / infra team |
+
+## 7. Validation check
+
+| Check | Result |
+|---|---|
+| Repository available | Pass |
+| Write access | Pass (tool:repo-access) |
+| Databricks / database prerequisites | Not applicable |
+| Blocking questions | None |
 
 
 <!-- tool results recorded by the spine -->
