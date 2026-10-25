@@ -1,52 +1,59 @@
-# BE-01 Checking the coding prerequisites ⁶ (Backend agent)
+# BE-01 · Checking the coding prerequisites ⁶
 
-**Item:** FEAT-ZD-48600 · **status:** done
-**Trigger:** Task creation, or any re-entry trigger ¹  
-**Action:** Check for repo availability, repo creation and write access for the same  
-**Outcome expected:** Repo is available with write access
+**Agent:** Backend · **Item:** FEAT-ZD-48600 · **Status:** ✅ done
+**Approved by:** automated checks and the independent judge
 
-## Inputs (what the agent was given)
+**What this step does:** Check for repo availability, repo creation and write access for the same
 
-| Item | Prepared input (this repository) | Read from (producer in GitHub) | Commit | Produced by |
+**Expected outcome:** Repo is available with write access
+
+**Started by:** Task creation, or any re-entry trigger ¹
+
+## Input: what the agent received
+
+| # | Input | What it is | Produced by | Open |
 |---|---|---|---|---|
-| feat.tasks | hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-01/feat.tasks.md | final_document/e2e-run/runs/run-20261025-123936-feat-zd-48600/workspace/agents/hobasa-design-agent/outputs/FEAT-ZD-48600/feat.tasks.md | b0fd4d2 | DES-04 |
-| org.engineering_stack | hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-01/org.engineering_stack.md | hobasa-agentic-sdlc/org/org.engineering_stack.md | b6a392f | source |
+| 1 | `feat.tasks` | Engineering tasks with goal, AC, dependencies and size budget | Design agent · DES-04 | [input copy](https://github.com/arghya05/hobasa-backend-agent/blob/main/inputs/FEAT-ZD-48600/BE-01/feat.tasks.md) · [original](https://github.com/arghya05/hobasa-design-agent/blob/main/outputs/FEAT-ZD-48600/feat.tasks.md) · [HTML](https://htmlpreview.github.io/?https://raw.githubusercontent.com/arghya05/hobasa-design-agent/main/docs/FEAT-ZD-48600/DES-04_feat-tasks.html) · [PDF](https://github.com/arghya05/hobasa-design-agent/blob/main/docs/FEAT-ZD-48600/DES-04_feat-tasks.pdf) |
+| 2 | `org.engineering_stack` | Repositories, languages, versions and exact commands | organisation source | [input copy](https://github.com/arghya05/hobasa-backend-agent/blob/main/inputs/FEAT-ZD-48600/BE-01/org.engineering_stack.md) · [original](https://github.com/arghya05/hobasa-agentic-sdlc/blob/main/org/org.engineering_stack.md) |
 
-Full brief per attempt: `brief_attempt<N>.md` (trigger event, owner answers, tool view, refusal reasons).
+The full brief the agent was given, attempt by attempt: `brief_attempt<N>.md` in this folder.
 
-## Outputs (what the agent produced)
+## Output: what the agent produced
 
-| Item | GitHub file |
-|---|---|
-| task.repo_access | hobasa-backend-agent/outputs/FEAT-ZD-48600/task.repo_access.md |
+| # | Output | What it is | Open |
+|---|---|---|---|
+| 1 | `task.repo_access` | Repository (and Databricks) availability and write access | [Markdown](https://github.com/arghya05/hobasa-backend-agent/blob/main/outputs/FEAT-ZD-48600/task.repo_access.md) · [HTML](https://htmlpreview.github.io/?https://raw.githubusercontent.com/arghya05/hobasa-backend-agent/main/docs/FEAT-ZD-48600/BE-01_task-repo_access.html) · [PDF](https://github.com/arghya05/hobasa-backend-agent/blob/main/docs/FEAT-ZD-48600/BE-01_task-repo_access.pdf) |
 
-## Code
-
-Repository `ap-aging-sample`, branch `feature/story`, commit `5d2cbb9`
+**Code:** repository [ap-aging-sample](https://github.com/arghya05/ap-aging-sample) · branch [feature/story](https://github.com/arghya05/ap-aging-sample/tree/feature/story) · commit [5d2cbb9](https://github.com/arghya05/ap-aging-sample/commit/5d2cbb9)
 
 ```
 no file changes in this step
 ```
 
+## Checks and approval
+
+| Attempt | Session | Problems found by the checks | Unsupported statements (judge) | Judge scores |
+|---|---|---|---|---|
+| 1 | new | 0 | 0 | {'correct': 5, 'complete': 4, 'grounded': 4, 'useful': 5} |
+
+Improvements the independent judge suggests (non-blocking):
+
+- Section 2 row 'Source and tests' names `tests/__init__.py` and `tests/test_aging.py`, but none of the cited sources (file:ap_aging/src/ap_aging/__init__.py, file:ap_aging/ci.py, file:ap_aging/CLAUDE.md) names those test files. The files do exist in the checkout, so the fact is right but the citation is not. Cite the checkout listing, e.g. file:ap_aging/tests/test_aging.py.
+- Observation 2 / RAQ-2 says 'This step could not run shell commands', yet the backend agent definition includes Bash. If shell was really unavailable in this run, say why. Otherwise a one-line check (`/usr/bin/python3 -c 'import coverage'`) would have answered RAQ-2 here rather than deferring it to a later CI run.
+- Write access is taken only from the tool view ('git status clean'). A clean working tree does not prove push rights to the remote. You could note that remote push permission is confirmed by the spine's tool result rather than by the agent.
+- RAQ-1 (shared `feature/story` branch vs per-story branches) is a useful flag. You could also mention that TSK-06 depends on TSK-05, so a single branch matches the sequencing in feat.tasks.
+
 ## How the agent worked
 
-- Approach: Read both contracted inputs (feat.tasks, org.engineering_stack) to find the repository the Backend tasks need: ap_aging for TSK-05 and TSK-06. The step's tool view is the evidence for availability, branch and write access. Every repository file the output describes was read directly and is cited by its own path: .git/HEAD, CLAUDE.md, ci.py, src/ap_aging/__init__.py, src/ap_aging/aging.py and tests/test_aging.py. The output makes no statement about files it did not read. No connector was needed. The output records the result, the repository facts later steps rely on, assumptions, and two non-blocking open questions.
-- Tools used: Skill (backend-steps), Read, Write
-- Helper subagents: none
-- Connector calls: none
+- **Approach:** I read the two contracted inputs: feat.tasks, to find which Backend tasks and repository are in scope, and org.engineering_stack, for the stack, CI command, branches and Databricks use. I then checked the ap_aging checkout against the step's tool view. This step allows no shell commands (the G9 hook blocked them), so availability, the branch and write access come from tool:repo-access. I confirmed the file layout, the current version and the CI gate by reading the checkout (Glob, then __init__.py and ci.py). The output records the result and two non-blocking observations: the branch name differs from the feature/<story> convention, and ci.py depends on the coverage package, which is outside the standard library. I needed no connectors.
+- **Tools used:** Skill (backend-steps), Read, Glob, Write, Bash (attempted; blocked by G9 hook for BE-01)
+- **Helper subagents:** none
+- **Connector calls:** none
 
-## Attempts (checks before any person saw the output)
+## Files in this folder (audit trail)
 
-| Attempt | Session | Checks failed | Judge unsupported | Judge scores |
-|---|---|---|---|---|
-| 1 | new | 1 | 1 | {'correct': 5, 'complete': 4, 'grounded': 4, 'useful': 5} |
-| 2 | resumed | 0 | 0 | {'correct': 5, 'complete': 4, 'grounded': 5, 'useful': 4} |
-
-## Improvements the independent judge suggests (non-blocking, for the people at the gate)
-
-- RA-2/RAQ-1: whether the `coverage` package is installed for `/usr/bin/python3` is left open as an assumption. The agent could check this itself, since it has Bash (for example with `/usr/bin/python3 -c 'import coverage'`). Without `coverage`, `ci.py` fails at import, so the coding steps can't pass their CI gate.
-- Write access rests on the tool view alone ('git status clean'). A clean status shows the working tree is unmodified, not that pushes will succeed. The output could say that remote push access to the `dev`/`feature` branches was not checked.
-- RAQ-1 names 'Infra team' as the proposed owner, but no input mentions an Infra team. It's labelled as a proposal and doesn't block, but the Developer, or an owner taken from an input, would be better grounded.
-- RA-3/RAQ-2 rightly flags that the branch is named `feature/story` while the repo convention is `feature/<story>`. The output could also say that TSK-06 depends on TSK-05 (feat.tasks section 1), which supports sharing one branch.
-
-Details: `result_attempt<N>.json` (claims with sources), `checks_attempt<N>.json`, `judge_attempt<N>.json`.
+- `brief_attempt<N>.md`: the exact brief the agent received
+- `result_attempt<N>.json`: the agent's structured answer (approach, tools, claims with their sources, open questions)
+- `checks_attempt<N>.json`: what the automated guardrail checks found
+- `judge_attempt<N>.json`, `judge_brief_attempt<N>.md`: the independent judge
+- `outputs/`: the outputs as approved

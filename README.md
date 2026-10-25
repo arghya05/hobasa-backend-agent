@@ -21,3 +21,11 @@ Backend Coding Agent in the Hobasa agentic SDLC. Owner: Backend developer; infra
 | BE-09 | Share the PR for review ⁶ | task.commit | task.pr | PR reviewer |
 | BE-10 | Update the defect ⁴ | feat.defects, task.pr | feat.defects | checks + sampled evaluation |
 | CMP-P03 | Implement the rule change (proposed) | feat.rule_spec, org.engineering_stack, org.rule_catalogue | task.pr | PR reviewer |
+
+<!-- work:FEAT-ZD-48600:start -->
+## Work done for FEAT-ZD-48600
+
+| Step | Name | Status | Input | Output | Details |
+|---|---|---|---|---|---|
+| BE-01 | Checking the coding prerequisites ⁶ | done | `feat.tasks`, `org.engineering_stack` | `task.repo_access`: [Markdown](https://github.com/arghya05/hobasa-backend-agent/blob/main/outputs/FEAT-ZD-48600/task.repo_access.md) · [HTML](https://htmlpreview.github.io/?https://raw.githubusercontent.com/arghya05/hobasa-backend-agent/main/docs/FEAT-ZD-48600/BE-01_task-repo_access.html) · [PDF](https://github.com/arghya05/hobasa-backend-agent/blob/main/docs/FEAT-ZD-48600/BE-01_task-repo_access.pdf) | [step record](https://github.com/arghya05/hobasa-backend-agent/blob/main/steps/FEAT-ZD-48600/BE-01/README.md) |
+<!-- work:FEAT-ZD-48600:end -->

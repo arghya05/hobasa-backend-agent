@@ -18,7 +18,6 @@
 ## Other GitHub files the agent read (valid sources when cited as file:<repository>/<path>)
 - `hobasa-backend-agent/.claude/skills/backend-steps/SKILL.md`
 - `hobasa-backend-agent/CLAUDE.md`
-- `ap-aging-sample/.git/HEAD`
 - `ap-aging-sample/CLAUDE.md`
 - `ap-aging-sample/ci.py`
 - `ap-aging-sample/src/ap_aging/__init__.py`
@@ -44,15 +43,15 @@ Shared memory and conventions: `memory/MEMORY.md` and `CLAUDE.md` in the SDLC re
 - Gate (who approves this output): no gate: automated checks, the independent judge and sampled human evaluation
 
 ## Inputs (GitHub checkout; read them with Read, or context_get for a receipt)
-- feat.tasks (Engineering tasks with goal, AC, dependencies and size budget): `hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-01/feat.tasks.md` (from final_document/e2e-run/runs/run-20261025-123936-feat-zd-48600/workspace/agents/hobasa-design-agent/outputs/FEAT-ZD-48600/feat.tasks.md at commit b0fd4d2)
-- org.engineering_stack (Repositories, languages, versions and exact commands): `hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-01/org.engineering_stack.md` (from hobasa-agentic-sdlc/org/org.engineering_stack.md at commit b6a392f)
+- feat.tasks (Engineering tasks with goal, AC, dependencies and size budget): `hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-01/feat.tasks.md` (from hobasa-design-agent/outputs/FEAT-ZD-48600/feat.tasks.md at commit b0fd4d2)
+- org.engineering_stack (Repositories, languages, versions and exact commands): `hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-01/org.engineering_stack.md` (from hobasa-agentic-sdlc/org/org.engineering_stack.md at commit 76d03ce)
 
 ## Outputs (write each file in full; the spine commits and pushes after evaluation and approval)
 - task.repo_access (Repository (and Databricks) availability and write access): write `hobasa-backend-agent/outputs/FEAT-ZD-48600/task.repo_access.md`
 
 
 ## How to work
-Decide the best way to do this step from the inputs and the workbook action, plan it (TodoWrite for multi-part work), then do it. Helper subagents you can delegate to: explorer, verifier (use the verifier before you finish when the output makes many factual statements). Use the shared memory (memory_search) for decisions and lessons. Connectors approved for you: api:osv (Known vulnerabilities for a dependency version (POST /v1/query with {"package":{"name":...,"ecosystem":"PyPI|npm"},"version":...})), api:pypi (Python package metadata: latest version, licence, release dates (GET /pypi/<package>/json)). Use one only when your inputs do not hold what you need; request a missing one with capability_request. You may also read any other file in the GitHub checkouts your step needs (for example other requirements when grouping, or code); cite it as file:<repository>/<path>.
+Decide the best way to do this step from the inputs and the workbook action, plan it (TodoWrite for multi-part work), then do it. Helper subagents you can delegate to: explorer, verifier (use the verifier before you finish when the output makes many factual statements). Use the shared memory (memory_search) for decisions and lessons. Connectors approved for you: api:osv (Known vulnerabilities for a dependency version (POST /v1/query with {"package":{"name":...,"ecosystem":"PyPI|npm"},"version":...})), api:pypi (Python package metadata: latest version, licence, release dates (GET /pypi/<package>/json)), mcp:codegraph (Code intelligence over the repository: a symbol's source, its callers and callees, the blast radius of a change and the tests it affects (codegraph_explore, codegraph_node and related tools; pass projectPath = the repository checkout)). Use one only when your inputs do not hold what you need; request a missing one with capability_request. You may also read any other file in the GitHub checkouts your step needs (for example other requirements when grouping, or code); cite it as file:<repository>/<path>.
 
 ## Tool view (cite as tool:repo-access)
 Repository ap_aging (Python 3.9 (standard library)) is available locally; branch feature/story created from dev at 5d2cbb9; the agent identity has write access (git status clean). No Databricks or other workspace is used by this repository.

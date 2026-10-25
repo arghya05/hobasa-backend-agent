@@ -1,5 +1,3 @@
 {
-  "failures": [
-    "G1 judge found an unsupported statement: \"Test files present | `tests/__init__.py`, `tests/test_aging.py`; `tests/test_overdue.py` does not exist yet (TSK-05 creates it) | tool:repo-access; feat.tasks (\" (The cited sources don't support the file list. The tool view (tool:repo-access) says only that ap_aging is available, `feature/story` was created from `dev` at )"
-  ]
+  "failures": []
 }
