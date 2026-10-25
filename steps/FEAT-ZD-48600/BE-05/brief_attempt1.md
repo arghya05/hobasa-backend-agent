@@ -7,18 +7,18 @@
 - Gate (who approves this output): no gate: automated checks, the independent judge and sampled human evaluation
 
 ## Inputs (GitHub checkout; read them with Read, or context_get for a receipt)
-- task.components (Components, layers, sources or pipelines to change): `hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-05/task.components.md` (from hobasa-backend-agent/outputs/FEAT-ZD-48600/task.components.md at commit c0b710e)
+- task.components (Components, layers, sources or pipelines to change): `hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-05/task.components.md` (from hobasa-backend-agent/outputs/FEAT-ZD-48600/task.components.md at commit f956a35)
 - feat.design (HLD, LLD and contracts): `hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-05/feat.design.md` (from hobasa-design-agent/outputs/FEAT-ZD-48600/feat.design.md at commit 722a98f)
 - feat.stories (Epics, stories and tasks with numbered AC, frame links, assumptions and open items (latest revision)): `hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-05/feat.stories.md` (from hobasa-requirement-agent/outputs/FEAT-ZD-48600/feat.stories.md at commit 0590ea4)
-- org.engineering_stack (Repositories, languages, versions and exact commands): `hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-05/org.engineering_stack.md` (from hobasa-agentic-sdlc/org/org.engineering_stack.md at commit a6b3e2a)
-- org.lessons (Approved lessons and eval cases): `hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-05/org.lessons.md` (from hobasa-agentic-sdlc/org/org.lessons.md at commit a6b3e2a)
+- org.engineering_stack (Repositories, languages, versions and exact commands): `hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-05/org.engineering_stack.md` (from hobasa-agentic-sdlc/org/org.engineering_stack.md at commit 3b03f15)
+- org.lessons (Approved lessons and eval cases): `hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-05/org.lessons.md` (from hobasa-agentic-sdlc/org/org.lessons.md at commit 3b03f15)
 - task.secrets_scope (Secrets granted for the task's environments (names only)): restricted, passed by reference only
 
 ## Outputs (write each file in full; the spine commits and pushes after evaluation and approval)
 - task.code (Code changes on the working branch): write `hobasa-backend-agent/outputs/FEAT-ZD-48600/task.code.md`
 
 ## Code
-Work in repository `ap-aging-sample` (Python 3.9 (standard library)). You may change only: src/ap_aging/, docs/, README.md. Run the CI yourself with `/usr/bin/python3 ci.py` from the repository root (or delegate to the ci-runner subagent) until it passes. Do not commit or push; the spine does. Document what you change: update the repository's README.md and docs/ (module overview, new functions with signatures, inputs, outputs and examples).
+Work in repository `ap-aging-sample` (Python 3.9 (standard library)). You may change only: src/ap_aging/, docs/, README.md. Shell commands allowed in this step: `/usr/bin/python3 ci.py`, `git status`, `git diff`, `git log`. Run the CI yourself with `/usr/bin/python3 ci.py` from the repository root (or delegate to the ci-runner subagent) until it passes. Do not commit or push; the spine does. Document what you change: update the repository's README.md and docs/ (module overview, new functions with signatures, inputs, outputs and examples).
 
 ## How to work
 Decide the best way to do this step from the inputs and the workbook action, plan it (TodoWrite for multi-part work), then do it. Helper subagents you can delegate to: explorer, verifier, ci-runner (use the verifier before you finish when the output makes many factual statements). Use the shared memory (memory_search) for decisions and lessons. Connectors approved for you: api:osv (Known vulnerabilities for a dependency version (POST /v1/query with {"package":{"name":...,"ecosystem":"PyPI|npm"},"version":...})), api:pypi (Python package metadata: latest version, licence, release dates (GET /pypi/<package>/json)). Use one only when your inputs do not hold what you need; request a missing one with capability_request. You may also read any other file in the GitHub checkouts your step needs (for example other requirements when grouping, or code); cite it as file:<repository>/<path>.

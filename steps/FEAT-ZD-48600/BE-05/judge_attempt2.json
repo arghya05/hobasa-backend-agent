@@ -1,0 +1,23 @@
+{
+  "unsupported": [
+    {
+      "text": "The workbook gives the unit tests that bring coverage to at least 90% to BE-06 (record:brief; task.components CMP-7)  [also row 1: \"left for BE-06 Unit Test Cases\" citing record:brief; task.components (CMP-7)]",
+      "why": "Neither cited source supports this. record:brief describes only BE-05 and never mentions BE-06 or which step writes unit tests. task.components CMP-7 names tests/test_overdue.py but not BE-06. The fact is true in the backend-steps SKILL.md (\"## BE-06 Unit Test Cases \u2026 at least 90 percent of the code coverage\"), but that file is not among the listed sources and is not cited."
+    }
+  ],
+  "improvements": [
+    "Fix the BE-06 citation: cite the workbook/backend-steps definition of BE-06 Unit Test Cases (or the journey board, which lists BE-06 as the next Backend step) instead of record:brief and task.components CMP-7.",
+    "Delete the stray trailer line \"[Tool result] [ap_aging] Sources compile\" at the end of task.code.md (line 103). It is a tool artefact, not part of the document. The same trailer was flagged in FE-04 and DS-05.",
+    "Section 4 cites tool:ci for 'existing tests pass', 'static checks: no issues', 'coverage below gate' and 'overall not passed'. The only CI evidence visible to the judge is the 'Sources compile' trailer. The code supports these results: the three existing tests touch only unchanged functions, no line is over 140 characters, and the uncovered lines are aging.py 24 and 50-61, 70, so coverage is about 73% against COVERAGE_MIN 90.0. Still, the record should quote the actual tool:ci fields (tests_run, failures, errors, static_issues, passed) that back each row, and leave out the coverage number if it is not in tool:ci.",
+    "The CI did not pass, so the workbook outcome ('Updated repo with the new implemented code changes') is only partly verified. The output does this correctly: it says the behaviour was checked by reading, not by tests, and raises CQ-1. The gate should decide whether BE-05 can close with the coverage gate red until BE-06.",
+    "docs/aging.md (a file this step changed) says \"Missing id, due_date or amount also raise KeyError, as in aging_buckets\". aging_buckets never reads 'id'. overdue_with_risk reads 'id' and 'amount' only for invoices that pass the overdue filter. Correct the sentence so the documentation matches the code.",
+    "Rows 22-23 say the module and package docstrings were 'extended' but do not quote the before text. A one-line before/after, or a git diff excerpt, would make the change list checkable."
+  ],
+  "scores": {
+    "correct": 5,
+    "complete": 4,
+    "grounded": 4,
+    "useful": 4
+  },
+  "notes": "I checked the record against the tool view, the files on disk (aging.py, __init__.py, README.md, docs/aging.md, CLAUDE.md, ci.py) and the five inputs.\n\n**Code claims all hold.**\n- The signatures, the paid filter, reuse of days_past_due, the strict `> OVERDUE_AFTER_DAYS` rule and the comment on why bucket_for is not used are all in the code.\n- So are the five-key row with Decimal quantize(TWO_PLACES), the 'unknown' default, KeyError for a missing vendor, and the sort by days descending, then id.\n- The CT-1 serialiser and the `__init__` exports with `__version__` \"1.5.0\" match the code, feat.design B3.1/B3.2 and task.components CMP-1 to CMP-6.\n\n**Other claims checked and supported:**\n- The 'return \"1-30\"' branch is not reached by tests/test_aging.py. The tests use bucket_for(0/31/90/91), an invoice 54 days past due and one not yet due.\n- The synthetic example in docs/aging.md gives 31, 75 and 30 days, as stated.\n- The design-versus-story amount-expression choice matches task.components section 8.\n- CQ-2 and CQ-3 match task.components CQB-1 and CQB-2.\n\n**Earlier refusal points are fixed.** The previous G2/G3 problems are gone: no uncited coverage percentage is stated, and the file:ap_aging paths cited exist with content that matches.\n\n**Remaining citation problem.** The one hallucination-class issue is citing record:brief and task.components for 'BE-06 Unit Test Cases', which neither source states.\n\n**Limit of this check.** I could not run CI myself because shell is blocked for BE-05. I also could not see the full tool:ci view, so the per-check CI results are judged consistent with the code and ci.py, not confirmed from the CI output."
+}

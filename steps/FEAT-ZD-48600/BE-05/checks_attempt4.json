@@ -1,6 +1,5 @@
 {
   "failures": [
-    "G1 judge found an unsupported statement: \"The tests (task.components BC-7, `tests/test_overdue.py`) are outside this step's write scope (`src/ap_aging/`, `docs/`, `README.md`) and belong to BE-06.\" / \"T\" (No input says what BE-06 is or what its outcome is. task.components assigns BC-7 to TSK-05/TSK-06 and never names BE-06, and the brief does not mention it. That)",
-    "G1 judge found an unsupported statement: \"The tests planned in task.components section 4 for `tests/test_overdue.py` cover every missed line\" (The output says one of the missed lines is `bucket_for`'s `return \"1-30\"` branch. None of the tests planned in task.components section 4 uses a day count from 1)"
+    "Claude Code session ended success: You've hit your session limit \u00b7 resets 6:30pm (Asia/Calcutta)"
   ]
 }

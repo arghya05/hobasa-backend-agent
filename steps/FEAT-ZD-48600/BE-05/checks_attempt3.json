@@ -1,5 +1,5 @@
 {
   "failures": [
-    "G3 numbers ['73.2', '38', '24', '45', '58', '64'] in \"CI compiles, runs 3 tests with 0 failures and 0 errors, and reports no static issues. Coverage is 73\" do not appear in tool:repo; org.engineering_stack"
+    "G1 judge found an unsupported statement: \"(judge did not finish)\" (You've hit your session limit \u00b7 resets 6:30pm (Asia/Calcutta))"
   ]
 }

@@ -1,0 +1,18 @@
+{
+  "structured": {
+    "approach": "",
+    "tools_used": [],
+    "claims": [],
+    "open_questions": [],
+    "summary": "You've hit your session limit \u00b7 resets 6:30pm (Asia/Calcutta)"
+  },
+  "meta": {
+    "subtype": "success",
+    "is_error": true,
+    "num_turns": 1,
+    "session_id": "2030009e-682b-488a-917f-5eadf4bd04e3",
+    "total_cost_usd": 2.0073445999999997,
+    "permission_denials": [],
+    "result": "You've hit your session limit \u00b7 resets 6:30pm (Asia/Calcutta)"
+  }
+}

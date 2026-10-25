@@ -1,7 +1,5 @@
 {
   "failures": [
-    "G2 claim cites file:ap_aging/ci.py but the agent never read that file in this session",
-    "G2 claim cites file:ap_aging/docs/aging.md but the agent never read that file in this session",
-    "G2 claim cites file:ap_aging/README.md but the agent never read that file in this session"
+    "G1 judge found an unsupported statement: \"The workbook gives the unit tests that bring coverage to at least 90% to BE-06 (record:brief; task.components CMP-7)  [also row 1: \"left for BE-06 Unit Test Cas\" (Neither cited source supports this. record:brief describes only BE-05 and never mentions BE-06 or which step writes unit tests. task.components CMP-7 names test)"
   ]
 }
