@@ -1,0 +1,22 @@
+{
+  "unsupported": [
+    {
+      "text": "Source and tests present | `src/ap_aging/aging.py`, `tests/test_aging.py`. `tests/test_overdue.py` does not exist yet; TSK-05 creates it | tool:repo-access (file listing); feat.tasks (section 2)",
+      "why": "The citation doesn't support the claim. The tool view (tool:repo-access in the brief) contains no file listing. It only says the repo is available, the branch was created from dev at 5d2cbb9, write access is granted and git status is clean. feat.tasks section 2 only says tests/test_overdue.py is \"new\"; it never mentions tests/test_aging.py. The files do exist on disk (src/ap_aging/aging.py, tests/test_aging.py, no tests/test_overdue.py), but none of the cited sources says so. The agent should cite the files it actually listed or read."
+    }
+  ],
+  "improvements": [
+    "file:ap_aging/CLAUDE.md is cited three times (lines 26, 45, 48), but it is not among the GitHub files recorded as read for this step. Its content does support the claims (Python 3.9 standard library, the CI command, \"Keep existing public signatures; add new functions for new behaviour\", branches main/dev/feature/<story>). Make sure the read is recorded, or cite the file through a recorded read.",
+    "Line 28 labels main as \"released\" and dev as \"integration\", but cites packed-refs, refs/heads/main and org.engineering_stack, and none of those carries the labels. The labels come from feat.tasks section 2 and ap_aging/CLAUDE.md; add one of them as a source.",
+    "Line 28 says \"`main` and `dev` both exist\" but cites only refs/heads/main for the local branches. Local refs/heads/dev exists too and should be cited, or say that the remote-tracking refs are the evidence.",
+    "Section 2 could note that .git/config sets upstreams only for main and dev. feature/story has a remote-tracking ref (origin/feature/story) but no [branch \"feature/story\"] upstream entry. That matters for the later push step.",
+    "RAQ-2 rightly flags that ci.py imports the third-party `coverage` package. It could also note that README.md and CLAUDE.md both describe the repo as standard library only, which makes the conflict explicit for the infra owner."
+  ],
+  "scores": {
+    "correct": 5,
+    "complete": 4,
+    "grounded": 4,
+    "useful": 5
+  },
+  "notes": "The output meets the BE-01 action and outcome: the repository is available, no repository needs creating, and write access is recorded (taken from the spine's tool view, with a clear statement that no push was tested). Facts checked against the sources:\n- Remote URL: .git/config points to github.com/arghya05/ap-aging-sample.git.\n- Remote-tracking refs: packed-refs shows origin/main, origin/dev and origin/feature/story all at 5d2cbb9.\n- Checked-out branch: HEAD is refs/heads/feature/story.\n- Branch history: the dev log says \\\"Created from origin/dev\\\" and the feature/story log says \\\"Created from HEAD\\\", both at 5d2cbb9.\n- __init__.py: version 1.4.0 and __all__ = [\\\"aging_buckets\\\"].\n- CI checks in ci.py: COVERAGE_MIN = 90.0; no print, eval or exec; no bare except; lines at most 140 characters; unittest discovery in tests/.\n- No Databricks or database (org.engineering_stack).\n- Backend tasks TSK-05 and TSK-06 in ap_aging, and the other lanes' task assignments, match feat.tasks section 1.\n\nThe forward references to BE-02, BE-03, BE-05, BE-06 and BE-07 match the backend agent's own step table (README.md), so they are not invented. \\\"No shell commands\\\" in RAQ-2 is accurate: the G9 hook blocks shell commands for BE-01.\n\nOne citation is unsupported: the \\\"tool:repo-access (file listing)\\\" source on the source-and-tests row. The listed files are correct on disk, but the cited tool view contains no file listing. Everything else is grounded."
+}

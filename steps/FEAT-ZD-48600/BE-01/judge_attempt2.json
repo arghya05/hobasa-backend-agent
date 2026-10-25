@@ -1,0 +1,22 @@
+{
+  "unsupported": [
+    {
+      "text": "| Secrets | Out of scope for this step (step BE-02) | record:brief |",
+      "why": "The cited source does not support the claim. The BE-01 brief (record:brief) never mentions secrets or step BE-02. The fact itself is correct: hobasa-backend-agent/README.md line 14 maps BE-02 to 'Access to secrets'. But that README is not among the inputs or listed read files, and record:brief does not state it."
+    }
+  ],
+  "improvements": [
+    "Remove the stray line at the end of the file, \"[Tool result] [ap_aging] Branch feature/story at 5d2cbb9; write access confirmed\". It is raw tool output pasted into the deliverable. If it is kept, it should be a cited statement. The BE-02 judge flagged the same pattern.",
+    "Line 36 says \"Push, merge and reset are run by the spine, not the agent\" but cites nothing. The brief and CLAUDE.md support only that the spine commits and pushes. Nothing read supports 'merge' and 'reset'. Narrow the sentence to commit and push and cite record:brief.",
+    "Several rows cite file:ap_aging/CLAUDE.md, which is not in the list of files the agent read. The content matches (Python 3.9 standard library, CI command, branches main/dev/feature/<story>, the signature rule). Still, the read list should include it so the citation can be traced.",
+    "Line 28 says local `dev` exists. The evidence is .git/logs/refs/heads/dev ('Created from origin/dev'), and refs/heads/dev itself was not read. Citing the dev log in that row would make the claim easier to trace.",
+    "Line 29 says feature/story was 'created from dev'. Its own reflog says 'Created from HEAD', and only the tool view says 'from dev'. The value 5d2cbb9 matches either way. Citing the tool view alone, or noting that HEAD was at dev's commit, would be more precise."
+  ],
+  "scores": {
+    "correct": 4,
+    "complete": 5,
+    "grounded": 4,
+    "useful": 5
+  },
+  "notes": "I checked the output against feat.tasks, org.engineering_stack, the tool view in the brief, and the ap_aging files (.git/config, HEAD, packed-refs, refs/heads/main, dev and feature/story reflogs, README.md, CLAUDE.md, ci.py, __init__.py, aging.py, test_aging.py).\n\nThe earlier refusal point is fixed. The file-existence claim now cites the code files and feat.tasks, not the tool view.\n\nThese claims match their sources:\n- TSK-05/06 file budgets and must-not-change lists.\n- The other lanes' assignments.\n- The origin URL (ap-aging-sample).\n- packed-refs showing origin/main, origin/dev and origin/feature/story at 5d2cbb9.\n- HEAD = feature/story.\n- Version 1.4.0 and __all__.\n- The four aging.py symbols.\n- The functions covered by test_aging.py.\n- The CI checks (COVERAGE_MIN = 90.0, print/eval/exec, bare except, 140 characters, unittest discovery).\n- The commit convention.\n- The `coverage` import, which supports RAQ-2.\n\nThe one unsupported item is a miscitation of BE-02/secrets to record:brief. The fact is true per the agent README but no cited source states it. The output meets the workbook outcome: the repo is available, a feature branch exists, write access comes from the tool view, and no repo creation or Databricks is needed."
+}

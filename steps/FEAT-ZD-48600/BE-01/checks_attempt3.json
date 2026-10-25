@@ -1,3 +1,5 @@
 {
-  "failures": []
+  "failures": [
+    "G2 claim cites file:hobasa-backend-agent/.claude/skills/backend-steps/SKILL.md but the agent never read that file in this session"
+  ]
 }

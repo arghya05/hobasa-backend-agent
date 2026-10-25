@@ -1,0 +1,5 @@
+{
+  "failures": [
+    "G1 judge found an unsupported statement: \"| Repository rule | Keep existing public signatures; add new functions for new behaviour | file:ap_aging/CLAUDE.md |\" (The only source cited is file:ap_aging/CLAUDE.md, and that file is not in the list of GitHub files the agent read for this step. The citation therefore does not)"
+  ]
+}

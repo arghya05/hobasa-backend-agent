@@ -1,0 +1,21 @@
+{
+  "unsupported": [
+    {
+      "text": "| Repository rule | Keep existing public signatures; add new functions for new behaviour | file:ap_aging/CLAUDE.md |",
+      "why": "The only source cited is file:ap_aging/CLAUDE.md, and that file is not in the list of GitHub files the agent read for this step. The citation therefore does not resolve to a source the step received (the same G2 failure as before). The wording matches ap_aging/CLAUDE.md line 7, and feat.tasks section 2 says something close (\"Keep every existing signature; add new functions.\"), but the claim does not cite feat.tasks. The same unresolvable citation also appears in section 2 rows 'Repository exists locally' and 'Branches', and in section 3 row 'CI command'. In the 'Branches' row, the labels `main` (released) and `dev` (integration) are backed only by that citation. Among the cited sources, only ap_aging/CLAUDE.md states them; feat.tasks section 2 also says it, but is not cited there."
+    }
+  ],
+  "improvements": [
+    "Remove file:ap_aging/CLAUDE.md from the citations, or replace it with sources the agent read. For the signature rule, use feat.tasks (section 2) instead. For main = released and dev = integration, use feat.tasks (section 2). The CI command is already supported by org.engineering_stack and file:ap_aging/README.md.",
+    "A stray line '[Tool result] [ap_aging] Branch feature/story at 5d2cbb9; write access confirmed' is appended after the open questions. It agrees with the tool view, but it is uncited and out of place in the document.",
+    "The reflog for feature/story (file:ap_aging/.git/logs/refs/heads/feature/story) says 'Created from HEAD', while the output says the branch was created from `dev`. The claim does cite the tool view, which says 'created from dev', so the output is supported. Still, it could note that the reflog alone shows HEAD and that the tool view is the authority.",
+    "There is no local refs/heads/dev file, only a reflog and origin/dev in packed-refs. Saying both branches 'exist' is fine because the reflog and remote refs show it, but stating that dev is confirmed through its reflog and remote-tracking ref would be more precise."
+  ],
+  "scores": {
+    "correct": 5,
+    "complete": 5,
+    "grounded": 4,
+    "useful": 5
+  },
+  "notes": "I checked every factual statement against feat.tasks, org.engineering_stack, the tool view, backend.md, SKILL.md and the ap_aging files. These all match their sources:\n- the Backend tasks (TSK-05 and TSK-06 in ap_aging) and the lane split for TSK-01 to TSK-08;\n- the remote URL (ap-aging-sample), HEAD = feature/story, and packed-refs pointing origin/dev, origin/main and origin/feature/story at 5d2cbb9;\n- version 1.4.0, __all__, the four existing names in aging.py, and the three tested functions in test_aging.py;\n- the CI command and checks (COVERAGE_MIN = 90.0, no print/eval/exec, no bare except, lines \u2264140 characters, unittest discovery), and the `import coverage` statement in ci.py;\n- BE-02 'Access to secrets' and BE-07 'Commit & Push' in SKILL.md, and the guardrails in backend.md.\n\nThe previous refusal was about SKILL.md, and that file is now in the agent's read set. The one remaining grounding problem is the citations to file:ap_aging/CLAUDE.md, which is not in the read set. The file does exist, and its content supports the statements, so this is an unresolvable citation, not an invented fact.\n\nWorkbook outcome: the repository is available and the agent has write access, per the tool view; no repository creation and no Databricks or database is needed. The open questions are sensible and correctly marked non-blocking."
+}

@@ -1,9 +1,5 @@
 {
   "failures": [
-    "G2 claim cites file:ap_aging/ci.py but the agent never read that file in this session",
-    "G2 claim cites file:ap_aging/src/ap_aging/__init__.py but the agent never read that file in this session",
-    "G2 claim cites file:ap_aging/ci.py but the agent never read that file in this session",
-    "G2 claim cites file:ap_aging/CLAUDE.md but the agent never read that file in this session",
-    "G2 claim cites file:ap_aging/CLAUDE.md but the agent never read that file in this session"
+    "G1 judge found an unsupported statement: \"Source and tests present | `src/ap_aging/aging.py`, `tests/test_aging.py`. `tests/test_overdue.py` does not exist yet; TSK-05 creates it | tool:repo-access (fil\" (The citation doesn't support the claim. The tool view (tool:repo-access in the brief) contains no file listing. It only says the repo is available, the branch w)"
   ]
 }
