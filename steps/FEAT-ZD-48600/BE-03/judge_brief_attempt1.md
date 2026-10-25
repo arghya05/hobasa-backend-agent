@@ -19,7 +19,7 @@
 - `hobasa-backend-agent/.claude/skills/backend-steps/SKILL.md`
 - `hobasa-backend-agent/CLAUDE.md`
 - `ap-aging-sample/CLAUDE.md`
-- `ap-aging-sample/README.md`
+- `ap-aging-sample/src/ap_aging/__init__.py`
 - `ap-aging-sample/src/ap_aging/aging.py`
 - `ap-forecast-sample/CLAUDE.md`
 - `ap-pipeline-sample/CLAUDE.md`
@@ -56,4 +56,4 @@ Decide the best way to do this step from the inputs and the workbook action, pla
 ## Tool view (cite as tool:repo-access)
 ap_aging has no database; no migrations exist or are required.
 
-Finish with the structured result: approach, tools_used, claims (each citing an input item name, a tool view, api:<name>, mcp:<server>, file:<repository>/<path> for any other GitHub file you read, record:intake, record:owner_answer, record:memory or record:brief for this brief; a claim drawing on several sources lists them separated by ';'; every number must appear in what you cite), open questions (BLOCKING: only when you cannot finish), summary.
+Finish with the structured result: approach, tools_used, claims (each citing an input item name, a tool view, api:<name>, mcp:<server>, file:<repository>/<path> for any other GitHub file you read, record:intake, record:owner_answer, record:memory or record:brief for this brief; a claim drawing on several sources lists them separated by ';'; every number must appear in what you cite), open questions (anything missing or unclear: BLOCKING: <what you need and who should answer>; never assume), summary.

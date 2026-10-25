@@ -18,9 +18,8 @@
 ## Other GitHub files the agent read (valid sources when cited as file:<repository>/<path>)
 - `hobasa-backend-agent/.claude/skills/backend-steps/SKILL.md`
 - `hobasa-backend-agent/CLAUDE.md`
-- `hobasa-backend-agent/outputs/FEAT-ZD-48600/task.db_changes.md`
 - `ap-aging-sample/CLAUDE.md`
-- `ap-aging-sample/README.md`
+- `ap-aging-sample/src/ap_aging/__init__.py`
 - `ap-aging-sample/src/ap_aging/aging.py`
 - `ap-forecast-sample/CLAUDE.md`
 - `ap-pipeline-sample/CLAUDE.md`
@@ -38,7 +37,9 @@ Shared memory and conventions: `memory/MEMORY.md` and `CLAUDE.md` in the SDLC re
 Your previous result for this step was refused. Fix every point, rewrite the output files in full, and return the structured result again. The outputs describe the work itself: never mention earlier attempts, refusals or this review in them.
 
 ## Refusal reasons
-G1 judge found an unsupported statement: "Tracked files | `README.md`, `CLAUDE.md`, `ci.py`, `src/ap_aging/__init__.py`, `src/ap_aging/aging.py`, `tests/__init__.py`, `tests/test_aging.py`; no migration" (Neither cited source lists these files. The tool view (tool:repo-access) says only 'ap_aging has no database; no migrations exist or are required'. README.md na)
+G1 judge found an unsupported statement: "Files in the checkout (excluding `.git` and `.codegraph`) | `src/ap_aging/__init__.py`, `src/ap_aging/aging.py`, `tests/__init__.py`, `tests/test_aging.py`, `ci" (The citation does not support the claim. aging.py and __init__.py are single source files and say nothing about what else is in the repository, such as tests/te)
+G1 judge found an unsupported statement: "Database access in code | A search of the repository for `sqlite`, `sqlalchemy`, `database`, `migrat`, `cursor` and `sql` found no match | file:ap_aging/src/ap_" (The claim is about a search across the whole repository, but the only citation is one file, aging.py, which cannot show what a repository-wide search returned. )
+G1 judge found an unsupported statement: "Repository checked | ap_aging, branch `feature/story` | tool:repo-access; file:ap_aging/CLAUDE.md" (Neither cited source names the literal branch `feature/story`. tool:repo-access only says ap_aging has no database. ap_aging/CLAUDE.md gives the naming pattern )
 
 ## Step brief (unchanged except the attempt number)
 # Step BE-03: Database changes (attempt 2) for FEAT-ZD-48600
@@ -63,4 +64,4 @@ Decide the best way to do this step from the inputs and the workbook action, pla
 ## Tool view (cite as tool:repo-access)
 ap_aging has no database; no migrations exist or are required.
 
-Finish with the structured result: approach, tools_used, claims (each citing an input item name, a tool view, api:<name>, mcp:<server>, file:<repository>/<path> for any other GitHub file you read, record:intake, record:owner_answer, record:memory or record:brief for this brief; a claim drawing on several sources lists them separated by ';'; every number must appear in what you cite), open questions (BLOCKING: only when you cannot finish), summary.
+Finish with the structured result: approach, tools_used, claims (each citing an input item name, a tool view, api:<name>, mcp:<server>, file:<repository>/<path> for any other GitHub file you read, record:intake, record:owner_answer, record:memory or record:brief for this brief; a claim drawing on several sources lists them separated by ';'; every number must appear in what you cite), open questions (anything missing or unclear: BLOCKING: <what you need and who should answer>; never assume), summary.

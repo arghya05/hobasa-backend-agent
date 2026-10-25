@@ -1,20 +1,29 @@
 {
   "unsupported": [
     {
-      "text": "Tracked files | `README.md`, `CLAUDE.md`, `ci.py`, `src/ap_aging/__init__.py`, `src/ap_aging/aging.py`, `tests/__init__.py`, `tests/test_aging.py`; no migration, schema or SQL file | tool:repo-access; file:ap_aging/README.md",
-      "why": "Neither cited source lists these files. The tool view (tool:repo-access) says only 'ap_aging has no database; no migrations exist or are required'. README.md names only `ci.py` in its CI command and lists no other files. No input or recorded tool result gives this file inventory. The list matches the checkout on disk, but the citations attached to it do not support it."
+      "text": "Files in the checkout (excluding `.git` and `.codegraph`) | `src/ap_aging/__init__.py`, `src/ap_aging/aging.py`, `tests/__init__.py`, `tests/test_aging.py`, `ci.py`, `README.md`, `CLAUDE.md`. No migration, schema or SQL file | file:ap_aging/src/ap_aging/aging.py; file:ap_aging/src/ap_aging/__init__.py",
+      "why": "The citation does not support the claim. aging.py and __init__.py are single source files and say nothing about what else is in the repository, such as tests/test_aging.py, ci.py or README.md. A Glob confirms the file list is accurate, but neither the recorded tool view nor the cited files show it. Cite the listing tool or the tool view instead."
+    },
+    {
+      "text": "Database access in code | A search of the repository for `sqlite`, `sqlalchemy`, `database`, `migrat`, `cursor` and `sql` found no match | file:ap_aging/src/ap_aging/aging.py",
+      "why": "The claim is about a search across the whole repository, but the only citation is one file, aging.py, which cannot show what a repository-wide search returned. An independent Grep also found no match, so the result is correct, but the cited source does not support the statement."
+    },
+    {
+      "text": "Repository checked | ap_aging, branch `feature/story` | tool:repo-access; file:ap_aging/CLAUDE.md",
+      "why": "Neither cited source names the literal branch `feature/story`. tool:repo-access only says ap_aging has no database. ap_aging/CLAUDE.md gives the naming pattern `feature/<story>`, not a checked-out branch. .git/HEAD does point to refs/heads/feature/story, but the agent did not cite or record reading it."
     }
   ],
   "improvements": [
-    "Repository row: 'branch `feature/story`' cites tool:repo-access and file:ap_aging/CLAUDE.md. CLAUDE.md gives only the pattern `feature/<story>`, and the tool view names no branch. A `feature/story` ref does exist in the checkout, but the output should cite something that shows it, or say 'feature/<story> pattern'.",
-    "Cite the file inventory to a real listing (for example mcp:codegraph or a repo-access listing), or drop it. The tool view's 'no migrations exist' already covers the conclusion.",
-    "The 'Conflict with an approved output: None' row could name the outputs it checked (feat.design D2, feat.tasks section 8), which already record 'None'."
+    "Cite the tool or listing that produced the repository file inventory and the keyword search. If neither is a recorded source, rely on tool:repo-access alone, which already says 'no database; no migrations exist or are required'.",
+    "The 'Inputs read in full | Pass | record:brief' check cites the brief, but the brief only lists the inputs and does not show they were read. Either drop the citation or point to evidence of the reads.",
+    "The upstream TSK-06/A8 does not say whether CT-1 transport (DQ-1/TQ-3) will persist data. The output frames this as a re-entry condition, which is right. It could also say that the Architect owns DQ-1, so the Developer knows who would re-trigger BE-03.",
+    "The 'No DBA or infra-team action is needed' line follows from 'no database'. It would be clearer to cite tool:repo-access and feat.design A1 on that line as well."
   ],
   "scores": {
     "correct": 5,
-    "complete": 5,
+    "complete": 4,
     "grounded": 4,
-    "useful": 5
+    "useful": 4
   },
-  "notes": "I checked every statement against feat.design (A1 Data row 'Storage, database, schema migration' out of scope; A3 DC-1/DD-3; A5 NF-10; A7 DD-1; A8; B3.1; B3.3; D3 DQ-1), feat.tasks (TSK-01, TSK-05, TSK-06, their dependencies and files in budget), aging.py (imports only `date`, `Decimal`, `Dict`/`Iterable` from typing; `aging_buckets` is in-memory), ap_aging/CLAUDE.md (Python 3.9 standard library), the brief (owner, gate, input commits b0fd4d2 and 722a98f) and the spine tool result ('No database in this repository's architecture; no migrations required'). The main conclusion, that no database change is required and the outcome holds because the required set is empty, is fully supported by the design's out-of-scope Data boundary, DD-1 and the tool view. 'BE-04 and BE-05' match the backend-steps SKILL. The only grounding gap is the tracked-file inventory. It is accurate against the checkout, but neither of its cited sources lists those files."
+  "notes": "The output's main conclusion is correct and well grounded: no database change is required, so there is nothing to complete. It agrees with feat.design A1 ('Storage, database, schema migration' is out of scope), DD-1, NF-10 and A8, with feat.tasks TSK-05/TSK-06 (none of their files is a schema or migration file), and with the tool view ('ap_aging has no database; no migrations exist or are required').\n\nI verified these details against the sources and found them accurate:\n- task IDs, components and files;\n- B3.1 additions;\n- DC-1, DC-3 and CT-1 shapes;\n- SE-4;\n- the aging.py imports;\n- the Python 3.9 stack;\n- the carried question ranges TKQ-1\u20133 and DQ-1\u20135.\n\nI independently checked the repository file list, the empty keyword search and the branch `feature/story` (from .git/HEAD), and all three are factually true. However, each is attached to a source that does not show it (single code files, or the CLAUDE.md naming pattern), so I list them as citation-support problems. None of them changes the conclusion.\n\nThe output invents no numbers, versions or people, and correctly reports no blocking questions."
 }

@@ -34,19 +34,20 @@ no file changes in this step
 
 | Attempt | Session | Problems found by the checks | Unsupported statements (judge) | Judge scores |
 |---|---|---|---|---|
-| 1 | new | 1 | 1 | {'correct': 5, 'complete': 5, 'grounded': 4, 'useful': 5} |
-| 2 | continued | 0 | 0 | {'correct': 5, 'complete': 5, 'grounded': 5, 'useful': 4} |
+| 1 | new | 3 | 3 | {'correct': 5, 'complete': 4, 'grounded': 4, 'useful': 4} |
+| 2 | continued | 0 | 0 | {'correct': 5, 'complete': 4, 'grounded': 5, 'useful': 4} |
 
 Improvements the independent judge suggests (non-blocking):
 
-- The output never cites the spine's own tool result ('[ap_aging] No database in this repository's architecture; no migrations required'). It relies only on tool:repo-access. That is enough, but citing both in sections 2 and 3 would tie the conclusion to the real tool run.
-- Section 2 says nothing about tests, CI or package files for ap_aging (no migration framework, ORM or DB driver dependency). The agent read ap_aging/CLAUDE.md, which names the CI command and the version file. One cited line saying no DB tooling appears there would strengthen the claim that no database exists, without listing files that no source names.
-- Section 1, row 'What reopens the platform': feat.design A8 attributes the triggers to the DES-01 check record (T-1 to T-6). Naming that record as the origin would make the chain of provenance complete.
+- Section 4 opens with 'each would bring storage into scope', but feat.design A8 only lists these as triggers that would reopen DES-01 (platform architecture). It does not say a transport between ap_aging and ap_portal brings storage into scope. Say instead that these conditions reopen the design, and storage would then need checking again.
+- Line 48 says 'No DBA or infra-team action is needed'. No source mentions a DBA or infra team, so this is the agent's own conclusion. It would be clearer to attach it to feat.design DD-1 and tool:repo-access, or to say only that no database action is required.
+- Validation row 'Inputs read in full | Pass | record:brief': the brief says which inputs exist but cannot show they were read. Cite the input files themselves, or drop the source.
+- 'Data backfill or seed | No' cites NF-10 (purity), which is about function behaviour, not data seeding. A1 ('Storage, database, schema migration' out of scope) together with tool:repo-access supports the row better.
 
 ## How the agent worked
 
-- **Approach:** BE-03 asks me to confirm that the database changes the Backend tasks need are done. I read feat.tasks and feat.design to find any storage need for TSK-05 and TSK-06. I then checked ap_aging against the tool view and read src/ap_aging/aging.py and CLAUDE.md for its imports and stack. The design puts storage, database and schema migration outside its boundary, and the tool view says ap_aging has no database. So there are no required changes and the outcome holds. In the output I cite only what the cited sources state: I removed the file listing that no source supports, and I marked as agent judgement the inference about repeating the check if DES-01 reopens. I kept the tool-results block that the spine records at the end of the file.
-- **Tools used:** Read, Write
+- **Approach:** BE-03 asks whether the database changes this feature needs are done. I read both contracted inputs in full (feat.tasks, feat.design) to find what TSK-05 and TSK-06 in ap_aging need for storage. Then I checked the repository using the step's tool view and the ap_aging files I read: aging.py, __init__.py and CLAUDE.md. Every statement about the repository cites the tool view or the specific file that supports it. I left out claims about the repository as a whole and about the branch, because no citable source supports them. The design and the repository agree that the feature has no storage and needs no migration. So the output records that no database change is required, that none is pending, and when this check should be run again.
+- **Tools used:** Skill (backend-steps), Read, Write
 - **Helper subagents:** none
 - **Connector calls:** none
 

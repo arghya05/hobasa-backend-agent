@@ -1,67 +1,75 @@
 # task.db_changes: FEAT-ZD-48600
 
-Database-change check for the Backend lane of FEAT-ZD-48600 (ZD-48600, "Show which overdue invoices belong to vendors that usually pay late"). This is step BE-03 Database changes. It covers the Backend tasks TSK-05 (STORY-05) and TSK-06 (STORY-06) in ap_aging.
+Database-changes check for the Backend lane of FEAT-ZD-48600 (ZD-48600, "Show which overdue invoices belong to vendors that usually pay late"). This is BE-03 Database changes.
 
-**Result: this feature needs no database changes, and none are outstanding. The step outcome ("Required database changes are completed") holds because there are no required changes.**
+**Result: no database change is required for this feature, so there is nothing to complete. The Backend tasks TSK-05 and TSK-06 are not blocked by any database prerequisite.**
 
 | Field | Value | Source |
 |---|---|---|
 | Trace ID | FEAT-ZD-48600 | record:brief |
 | Step | BE-03 Database changes | record:brief |
-| Owner / gate | Developer / no gate (automated checks, the independent judge and sampled human evaluation) | record:brief |
+| Workbook action | Check the required database changes are completed | record:brief |
+| Owner / gate | Developer / automated checks, independent judge, sampled human evaluation | record:brief |
 | Inputs | feat.tasks (b0fd4d2), feat.design (722a98f) | record:brief |
-| Repository | ap_aging | tool:repo-access; feat.tasks (section 1) |
-| Backend tasks in scope | TSK-05 `overdue_with_risk`, TSK-06 `overdue_rows_to_json` | feat.tasks (section 1, TSK-05, TSK-06) |
+| Backend tasks in scope | TSK-05 (STORY-05, `overdue_with_risk`), TSK-06 (STORY-06, `overdue_rows_to_json`), both in ap_aging | feat.tasks (section 1) |
+| Repository checked | ap_aging | tool:repo-access |
 
-## 1. What the design requires of storage
-
-| Check | Finding | Source |
-|---|---|---|
-| Storage in the design boundary | "Storage, database, schema migration" is listed as **out of this design** | feat.design (A1, Data row) |
-| New data in this feature | One new record key `paid_date`, one new reject reason `'paid_date'`, and in-memory delay history, risk map, overdue rows and CT-1 JSON | feat.design (A1, Data row) |
-| Technology | No new repository, service, runtime, library or storage; Python 3.9 standard library and Node.js 22 CommonJS only (DD-1) | feat.design (A7, DD-1) |
-| Purity of new functions | Every new function is pure and in-memory: no I/O, no network, no mutation of inputs (NF-10) | feat.design (A5, NF-10) |
-| What reopens the platform | A storage or network call from the libraries is one of the triggers that would reopen DES-01; this design triggers none of them | feat.design (A8) |
-| ap_aging data structures | Input invoice (DC-1, a plain dict), overdue row (a dict), CT-1 payload (a JSON string) | feat.design (A3 DC-1, B3.3) |
-| ap_aging module changes | `src/ap_aging/aging.py` (constants, `overdue_with_risk`, `overdue_rows_to_json`, `import json`, `List` typing) and `src/ap_aging/__init__.py` (exports, version step) | feat.design (B3.1); feat.tasks (TSK-05, TSK-06 "Files in budget") |
-| CT-1 transport | No transport layer is added; CT-1 is a serialised string that the consumer parses (DD-3) | feat.design (A3, DD-3); feat.tasks (TSK-06 "Must not change") |
-
-## 2. What the repository holds today
+## 1. What the design asks for
 
 | Check | Finding | Source |
 |---|---|---|
-| Database in ap_aging | ap_aging has no database; no migrations exist or are required | tool:repo-access |
-| Imports in the aging module | `aging.py` imports only `date` from `datetime`, `Decimal` from `decimal`, and `Dict` and `Iterable` from `typing` | file:ap_aging/src/ap_aging/aging.py |
-| Existing function shape | `aging_buckets(invoices, as_of)` loops over an iterable of invoice dicts and returns a dict of totals per bucket | file:ap_aging/src/ap_aging/aging.py |
-| Language and stack | Python 3.9 (standard library) | file:ap_aging/CLAUDE.md |
+| Storage in scope of the design | "Storage, database, schema migration" is listed as **out of this design**; the data in scope is one new record key `paid_date`, one new reject reason, in-memory delay history, risk map, overdue rows, and CT-1 JSON | feat.design (A1, Data boundary) |
+| New technology / storage | DD-1: "No new repository, service, runtime, library or storage" | feat.design (A7, DD-1) |
+| Purity of new functions | NF-10: every new function is pure and in-memory, with no I/O, no network and no mutation of inputs | feat.design (A5, NF-10) |
+| What would reopen the platform | "any storage or network call from the libraries" would re-trigger DES-01; the design "triggers none of them" | feat.design (A8) |
+| Backend files in budget | TSK-05: `src/ap_aging/aging.py`, `src/ap_aging/__init__.py`, new `tests/test_overdue.py`. TSK-06: `src/ap_aging/aging.py`, `src/ap_aging/__init__.py`, `tests/test_overdue.py`. No schema, migration or database file is listed | feat.tasks (TSK-05, TSK-06) |
+| ap_aging changes in the LLD | Add `OVERDUE_AFTER_DAYS`, `TWO_PLACES`, `overdue_with_risk`, `overdue_rows_to_json`, `import json` and `List` typing to `aging.py`; exports and version step in `__init__.py` | feat.design (B3.1) |
+| Data contracts the Backend consumes and produces | DC-1 invoice records are plain Python `dict`s; DC-3 risk map is a `Dict[str, str]`; CT-1 is a serialised JSON string, with no transport layer added | feat.design (A3, DC-1, DC-3, CT-1, DD-3) |
 
-## 3. Required database changes
+## 2. What the repository holds
+
+| Check | Finding | Source |
+|---|---|---|
+| Database in ap_aging | "ap_aging has no database; no migrations exist or are required." | tool:repo-access |
+| Imports of the module the Backend tasks change | `aging.py` imports only `datetime.date`, `decimal.Decimal` and `typing` (`Dict`, `Iterable`); no database driver is imported | file:ap_aging/src/ap_aging/aging.py |
+| How the existing code gets its data | `aging_buckets(invoices, as_of)` works on an in-memory iterable of invoice dicts passed in by the caller | file:ap_aging/src/ap_aging/aging.py |
+| Package exports | `__init__.py` imports `aging_buckets` from `.aging` and exports it; nothing else is imported | file:ap_aging/src/ap_aging/__init__.py |
+| Language and stack | Python 3.9, standard library | file:ap_aging/CLAUDE.md |
+
+## 3. Database changes required and their status
 
 | Change | Required? | Status | Source |
 |---|---|---|---|
-| Schema, table, column, index or migration | No: the design keeps storage out of scope, and ap_aging has no database | Nothing to do | feat.design (A1, DD-1); tool:repo-access |
-| Data backfill or reference data | No: the new ap_aging data is in-memory rows and a JSON string built by pure functions | Nothing to do | feat.design (A1, NF-10, B3.3) |
-| DBA or infrastructure prerequisite | No: there is no database change to prepare | Nothing to request | feat.design (A1); tool:repo-access |
+| New table, column or index | No | Not applicable | feat.design (A1, DD-1); tool:repo-access |
+| Schema migration | No | Not applicable | feat.design (A1); tool:repo-access |
+| Data backfill or seed | No | Not applicable | feat.design (A1, NF-10) |
+| New database connection, credentials or secret | No | Not applicable | feat.design (DD-1, A6 SE-4) |
 
-The new `paid_date` key is a field of the in-memory invoice record (DC-1), built by `transform.to_model` in ap_pipeline under TSK-01 (Data Engineering lane). In ap_aging, extra keys such as `paid_date` are ignored (feat.design A2 HC-1, A3 DC-1, B3.3; feat.tasks TSK-01).
+No DBA or infra-team action is needed for TSK-05 or TSK-06. The `paid_date` key is added in memory by the Data Engineering lane (TSK-01, `transform.to_model`), not by a database change (feat.tasks TSK-01; feat.design HC-1, DC-1).
 
-## 4. Effect on the next steps
+## 4. Re-entry conditions
 
-- The Backend tasks have no database dependency. TSK-05 depends on nothing in code, and TSK-06 depends on TSK-05 (feat.tasks section 1, TSK-05, TSK-06).
-- Agent judgement: if a later change added storage, or a transport between ap_aging and ap_portal, it would reopen DES-01 (feat.design A8), and the database check should then be repeated.
+This check must be re-run (BE-03 re-entry) if any of these happen, because each would bring storage into scope:
+
+| Condition | Source |
+|---|---|
+| A transport or service is added between ap_aging and ap_portal (TQ-3 / DQ-1 answered with a component that persists data) | feat.design (A8, DD-3, D3 DQ-1) |
+| Any storage or network call is added to the libraries | feat.design (A8) |
+| A change request adds a database, schema or storage to ap_aging | feat.design (A1, DD-1) |
 
 ## 5. Open questions
 
-None from this step. DQ-1 (which production component calls the stages in sequence and carries CT-1) stays open, as carried in feat.design D3. Its interim answer adds no transport (DD-3), so it creates no database change for this feature.
+None. The inputs and the repository agree that no database change is needed. Open questions carried from feat.tasks (TKQ-1 to TKQ-3) and feat.design (DQ-1 to DQ-5) are not about database changes and are unchanged.
 
 ## 6. Validation check
 
 | Check | Result | Source |
 |---|---|---|
-| Storage needs read from the design inputs | Pass: feat.design A1, A3, A5, A7, A8, B3 and feat.tasks TSK-05, TSK-06 | feat.design; feat.tasks |
-| Database in the repository | None | tool:repo-access |
-| Conflict with an approved output | None | feat.design; feat.tasks |
+| Inputs read in full | Pass: feat.tasks, feat.design | record:brief |
+| Design and repository agree | Pass: both state no storage or database | feat.design (A1, DD-1); tool:repo-access |
+| Conflict with an approved output | None | feat.tasks (section 8); feat.design (D2) |
 | Blocking questions | None | — |
+| Code changed in this step | None (check only) | record:brief |
 
 
 <!-- tool results recorded by the spine -->
