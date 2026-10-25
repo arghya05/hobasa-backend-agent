@@ -1,58 +1,65 @@
-# BE-03 Database changes (Backend agent)
+# BE-03 · Database changes
 
-**Item:** FEAT-ZD-48600 · **status:** done
-**Trigger:** Task creation, or any re-entry trigger ¹  
-**Action:** Check the required database changes are completed  
-**Outcome expected:** Required Database changes are completed
+**Agent:** Backend · **Item:** FEAT-ZD-48600 · **Status:** ✅ done
+**Approved by:** Developer: approve by sim.developer
 
-## Inputs (what the agent was given)
+**What this step does:** Check the required database changes are completed
 
-| Item | Prepared input (this repository) | Read from (producer in GitHub) | Commit | Produced by |
+**Expected outcome:** Required Database changes are completed
+
+**Started by:** Task creation, or any re-entry trigger ¹
+
+## Input: what the agent received
+
+| # | Input | What it is | Produced by | Open |
 |---|---|---|---|---|
-| feat.tasks | hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-03/feat.tasks.md | hobasa-design-agent/outputs/FEAT-ZD-48600/feat.tasks.md | b0fd4d2 | DES-04 |
-| feat.design | hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-03/feat.design.md | hobasa-design-agent/outputs/FEAT-ZD-48600/feat.design.md | 722a98f | DES-02 |
+| 1 | `feat.tasks` | Engineering tasks with goal, AC, dependencies and size budget | Design agent · DES-04 | [input copy](https://github.com/arghya05/hobasa-backend-agent/blob/main/inputs/FEAT-ZD-48600/BE-03/feat.tasks.md) · [original](https://github.com/arghya05/hobasa-design-agent/blob/main/outputs/FEAT-ZD-48600/feat.tasks.md) · [HTML](https://htmlpreview.github.io/?https://raw.githubusercontent.com/arghya05/hobasa-design-agent/main/docs/FEAT-ZD-48600/DES-04_feat-tasks.html) · [PDF](https://github.com/arghya05/hobasa-design-agent/blob/main/docs/FEAT-ZD-48600/DES-04_feat-tasks.pdf) |
+| 2 | `feat.design` | HLD, LLD and contracts | Design agent · DES-02 | [input copy](https://github.com/arghya05/hobasa-backend-agent/blob/main/inputs/FEAT-ZD-48600/BE-03/feat.design.md) · [original](https://github.com/arghya05/hobasa-design-agent/blob/main/outputs/FEAT-ZD-48600/feat.design.md) · [HTML](https://htmlpreview.github.io/?https://raw.githubusercontent.com/arghya05/hobasa-design-agent/main/docs/FEAT-ZD-48600/DES-02_feat-design.html) · [PDF](https://github.com/arghya05/hobasa-design-agent/blob/main/docs/FEAT-ZD-48600/DES-02_feat-design.pdf) |
 
-Full brief per attempt: `brief_attempt<N>.md` (trigger event, owner answers, tool view, refusal reasons).
+The full brief the agent was given, attempt by attempt: `brief_attempt<N>.md` in this folder.
 
-## Outputs (what the agent produced)
+## Output: what the agent produced
 
-| Item | GitHub file |
-|---|---|
-| task.db_changes | hobasa-backend-agent/outputs/FEAT-ZD-48600/task.db_changes.md |
+| # | Output | What it is | Open |
+|---|---|---|---|
+| 1 | `task.db_changes` | Completed database changes | [Markdown](https://github.com/arghya05/hobasa-backend-agent/blob/main/outputs/FEAT-ZD-48600/task.db_changes.md) · [HTML](https://htmlpreview.github.io/?https://raw.githubusercontent.com/arghya05/hobasa-backend-agent/main/docs/FEAT-ZD-48600/BE-03_task-db_changes.html) · [PDF](https://github.com/arghya05/hobasa-backend-agent/blob/main/docs/FEAT-ZD-48600/BE-03_task-db_changes.pdf) |
 
-## Code
-
-Repository `ap-aging-sample`, branch `feature/story`, commit `5d2cbb9`
+**Code:** repository [ap-aging-sample](https://github.com/arghya05/ap-aging-sample) · branch [feature/story](https://github.com/arghya05/ap-aging-sample/tree/feature/story) · commit [5d2cbb9](https://github.com/arghya05/ap-aging-sample/commit/5d2cbb9)
 
 ```
 no file changes in this step
 ```
 
+## Checks and approval
+
+| Attempt | Session | Problems found by the checks | Unsupported statements (judge) | Judge scores |
+|---|---|---|---|---|
+| 1 | new | 1 | 1 | {'correct': 5, 'complete': 5, 'grounded': 4, 'useful': 5} |
+| 2 | continued | 0 | 0 | {'correct': 5, 'complete': 5, 'grounded': 5, 'useful': 4} |
+
+Improvements the independent judge suggests (non-blocking):
+
+- The output never cites the spine's own tool result ('[ap_aging] No database in this repository's architecture; no migrations required'). It relies only on tool:repo-access. That is enough, but citing both in sections 2 and 3 would tie the conclusion to the real tool run.
+- Section 2 says nothing about tests, CI or package files for ap_aging (no migration framework, ORM or DB driver dependency). The agent read ap_aging/CLAUDE.md, which names the CI command and the version file. One cited line saying no DB tooling appears there would strengthen the claim that no database exists, without listing files that no source names.
+- Section 1, row 'What reopens the platform': feat.design A8 attributes the triggers to the DES-01 check record (T-1 to T-6). Naming that record as the origin would make the chain of provenance complete.
+
 ## How the agent worked
 
-- Approach: I read both contracted inputs: feat.tasks for the Backend tasks TSK-05 and TSK-06, and feat.design for the scope boundaries, DD-1, NF-10, A8 and B3. Both say storage, databases and schema migrations are out of scope. I then checked the ap_aging checkout. I opened CLAUDE.md, src/ap_aging/aging.py and src/ap_aging/__init__.py with Read to confirm there is no database client or storage code. The repo-access tool view also says there is no database. The output cites only files I opened with Read in this session, the two inputs, the brief and the tool view. The step was small, so I did not delegate to a subagent and did not use any connector.
-- Tools used: Skill:backend-steps, Read, Glob, Grep, Write
-- Helper subagents: none
-- Connector calls: none
-
-## Attempts (checks before any person saw the output)
-
-| Attempt | Session | Checks failed | Judge unsupported | Judge scores |
-|---|---|---|---|---|
-| 1 | new | 1 | — | — |
-| 2 | resumed | 0 | 0 | {'correct': 5, 'complete': 4, 'grounded': 5, 'useful': 5} |
-
-## Improvements the independent judge suggests (non-blocking, for the people at the gate)
-
-- Section 4 quotes the stop-and-ask condition ("a required dependency or database change is missing"), and line 5 says "BE-04 can start". Neither has a source in the output. Both come from the backend agent definition and skill (backend.md, backend-steps), not from the listed inputs. Cite that source so a reader can trace them.
-- Line 66 has an appended line, "[Tool result] [ap_aging] No database in this repository's architecture; no migrations required", with no section or citation. Its wording differs from the brief's tool view ("ap_aging has no database; no migrations exist or are required"). Remove it or fold it into section 3 under tool:repo-access, so there is one consistent statement of the tool view.
-- Section 1's Data row lists only the in-memory structures and CT-1 as the data in scope. The same feat.design A1 row also lists the new `paid_date` record key and the `'paid_date'` reject reason. They appear later in the 'New data shapes' row, but listing them in the Data row too would mirror the source exactly.
-- The output checks storage only for ap_aging, the Backend lane. Adding one line that DC-1 to DC-3 and CT-1 are all in-memory dicts or JSON strings (feat.design A3) would make clear that no upstream lane hands the Backend a database dependency.
-
-Details: `result_attempt<N>.json` (claims with sources), `checks_attempt<N>.json`, `judge_attempt<N>.json`.
+- **Approach:** BE-03 asks me to confirm that the database changes the Backend tasks need are done. I read feat.tasks and feat.design to find any storage need for TSK-05 and TSK-06. I then checked ap_aging against the tool view and read src/ap_aging/aging.py and CLAUDE.md for its imports and stack. The design puts storage, database and schema migration outside its boundary, and the tool view says ap_aging has no database. So there are no required changes and the outcome holds. In the output I cite only what the cited sources state: I removed the file listing that no source supports, and I marked as agent judgement the inference about repeating the check if DES-01 reopens. I kept the tool-results block that the spine records at the end of the file.
+- **Tools used:** Read, Write
+- **Helper subagents:** none
+- **Connector calls:** none
 
 ## Human evaluation
 
-| Role | By | Decision | Scores | Comment or reason |
+| Role | By | Decision | Scores (correct, complete, grounded, useful) | Comment or reason |
 |---|---|---|---|---|
 | Developer | sim.developer | approve | — | automated checks and the independent judge passed |
+
+## Files in this folder (audit trail)
+
+- `brief_attempt<N>.md`: the exact brief the agent received
+- `result_attempt<N>.json`: the agent's structured answer (approach, tools, claims with their sources, open questions)
+- `checks_attempt<N>.json`: what the automated guardrail checks found
+- `judge_attempt<N>.json`, `judge_brief_attempt<N>.md`: the independent judge
+- `outputs/`: the outputs as approved

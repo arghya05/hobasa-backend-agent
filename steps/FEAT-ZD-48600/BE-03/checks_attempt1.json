@@ -1,5 +1,5 @@
 {
   "failures": [
-    "G2 claim cites file:ap_aging/CLAUDE.md but the agent never read that file in this session"
+    "G1 judge found an unsupported statement: \"Tracked files | `README.md`, `CLAUDE.md`, `ci.py`, `src/ap_aging/__init__.py`, `src/ap_aging/aging.py`, `tests/__init__.py`, `tests/test_aging.py`; no migration\" (Neither cited source lists these files. The tool view (tool:repo-access) says only 'ap_aging has no database; no migrations exist or are required'. README.md na)"
   ]
 }

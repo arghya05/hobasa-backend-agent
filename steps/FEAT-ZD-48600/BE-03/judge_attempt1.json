@@ -1,0 +1,20 @@
+{
+  "unsupported": [
+    {
+      "text": "Tracked files | `README.md`, `CLAUDE.md`, `ci.py`, `src/ap_aging/__init__.py`, `src/ap_aging/aging.py`, `tests/__init__.py`, `tests/test_aging.py`; no migration, schema or SQL file | tool:repo-access; file:ap_aging/README.md",
+      "why": "Neither cited source lists these files. The tool view (tool:repo-access) says only 'ap_aging has no database; no migrations exist or are required'. README.md names only `ci.py` in its CI command and lists no other files. No input or recorded tool result gives this file inventory. The list matches the checkout on disk, but the citations attached to it do not support it."
+    }
+  ],
+  "improvements": [
+    "Repository row: 'branch `feature/story`' cites tool:repo-access and file:ap_aging/CLAUDE.md. CLAUDE.md gives only the pattern `feature/<story>`, and the tool view names no branch. A `feature/story` ref does exist in the checkout, but the output should cite something that shows it, or say 'feature/<story> pattern'.",
+    "Cite the file inventory to a real listing (for example mcp:codegraph or a repo-access listing), or drop it. The tool view's 'no migrations exist' already covers the conclusion.",
+    "The 'Conflict with an approved output: None' row could name the outputs it checked (feat.design D2, feat.tasks section 8), which already record 'None'."
+  ],
+  "scores": {
+    "correct": 5,
+    "complete": 5,
+    "grounded": 4,
+    "useful": 5
+  },
+  "notes": "I checked every statement against feat.design (A1 Data row 'Storage, database, schema migration' out of scope; A3 DC-1/DD-3; A5 NF-10; A7 DD-1; A8; B3.1; B3.3; D3 DQ-1), feat.tasks (TSK-01, TSK-05, TSK-06, their dependencies and files in budget), aging.py (imports only `date`, `Decimal`, `Dict`/`Iterable` from typing; `aging_buckets` is in-memory), ap_aging/CLAUDE.md (Python 3.9 standard library), the brief (owner, gate, input commits b0fd4d2 and 722a98f) and the spine tool result ('No database in this repository's architecture; no migrations required'). The main conclusion, that no database change is required and the outcome holds because the required set is empty, is fully supported by the design's out-of-scope Data boundary, DD-1 and the tool view. 'BE-04 and BE-05' match the backend-steps SKILL. The only grounding gap is the tracked-file inventory. It is accurate against the checkout, but neither of its cited sources lists those files."
+}
