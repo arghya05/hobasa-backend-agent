@@ -12,10 +12,10 @@ Identify the components/layers that needs to be created/updated with minimum lin
 |---|---|---|---|---|
 | feat.tasks | hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-04/feat.tasks.md | hobasa-design-agent/outputs/FEAT-ZD-48600/feat.tasks.md | b0fd4d2 | DES-04 |
 | feat.stories | hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-04/feat.stories.md | hobasa-requirement-agent/outputs/FEAT-ZD-48600/feat.stories.md | 0590ea4 | REQ-08 |
-| feat.prd | hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-04/feat.prd.md | hobasa-requirement-agent/outputs/FEAT-ZD-48600/feat.prd.md | 908b58d | REQ-05 |
+| feat.prd | hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-04/feat.prd.md | final_document/e2e-run/runs/run-20261025-111239-feat-zd-48600/workspace/agents/hobasa-requirement-agent/outputs/FEAT-ZD-48600/feat.prd.md | 908b58d | REQ-05 |
 | feat.trd | hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-04/feat.trd.md | hobasa-requirement-agent/outputs/FEAT-ZD-48600/feat.trd.md | 3637e51 | REQ-07 |
 | feat.design | hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-04/feat.design.md | hobasa-design-agent/outputs/FEAT-ZD-48600/feat.design.md | 722a98f | DES-02 |
-| task.repo_access | hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-04/task.repo_access.md | hobasa-backend-agent/outputs/FEAT-ZD-48600/task.repo_access.md | c7b4be8 | BE-01 |
+| task.repo_access | hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-04/task.repo_access.md | hobasa-backend-agent/outputs/FEAT-ZD-48600/task.repo_access.md | aac590a | BE-01 |
 
 Full brief per attempt: `brief_attempt<N>.md` (trigger event, owner answers, tool view, refusal reasons).
 
@@ -35,8 +35,8 @@ no file changes in this step
 
 ## How the agent worked
 
-- Approach: I followed the backend-steps skill for BE-04. I read the six contracted inputs (feat.tasks, feat.stories, feat.prd, feat.trd, feat.design, task.repo_access) and took receipts for each through context_get. I also read the approved BE-03 output task.db_changes as background. I read the existing ap_aging code from the step's tool view (aging.py, __init__.py, tests) to see what can be reused. The CI script and README in the checkout I read but do not cite, because earlier backend steps were refused under G2 for citing repository files directly. Shell commands are blocked for this step, so I ran no git or CI command. I mapped the Backend tasks TSK-05 and TSK-06 to the smallest set of changes inside their file budgets: two source files and one new test file. For each change I recorded a minimum-lines choice: reuse days_past_due, copy the paid test and Decimal conversion from aging_buckets, compare against one constant instead of calling bucket_for, build rows inline with no helper or new module, and use a single json.dumps for CT-1. I added a code sketch built from the design's signatures, docstrings and numbered algorithm. A verifier subagent then checked the draft against every cited source. It found five unsupported statements: the sketch was described as 'as given in the design', the trace for the exports pointed at the wrong acceptance criterion, the stop-and-ask quote came from an unmapped source, BE-05 was named although no mapped source names it, and the owners of the carried questions were over-stated. I fixed all five, plus two borderline wordings.
-- Tools used: Skill (backend-steps), Read, Grep, Glob, mcp__hobasa-context__context_list, mcp__hobasa-context__context_get, Agent (verifier), Write, Edit
+- Approach: I followed the backend-steps BE-04 procedure. First I read the six contracted inputs. feat.tasks and feat.design B3 were read in full. For feat.trd and feat.prd I searched only the Backend parts: IF-5, IF-6, C-6, C-7, F-10, T-8 to T-11, R-1, R-7, and AC-13 to AC-18. Then I read the ap_aging code: aging.py, __init__.py, ci.py, README.md and the file list. The step blocks shell commands, so I used Read and Glob, and checked that the files match the tool view. I mapped each Backend task (TSK-05, TSK-06) to the smallest set of components. The design adds new code only to aging.py and __init__.py, plus one new test file. It reuses days_past_due and the paid test from aging_buckets, does not use bucket_for, and adds no layer, transport, database or CI change. I wrote task.components.md and ran the verifier subagent. It found no wrong numbers and no contradictions. I fixed the five wording and citation gaps it reported: references to step IDs not in the inputs, a reason for the test-file split that was not in the source, and missing citations to feat.design B3.5.
+- Tools used: Skill:backend-steps, Read, Grep, Glob, Write, Edit, Agent:verifier
 - Helper subagents: Agent
 - Connector calls: none
 
@@ -48,9 +48,11 @@ no file changes in this step
 
 ## Improvements the independent judge suggests (non-blocking, for the people at the gate)
 
-- The workbook outcome asks for changes 'with minimum lines of code', but the output gives no size estimate per component, such as a rough line count for BC-1 to BC-7. The design gives the full algorithms (feat.design B3.2), so an estimate like this was possible and would make the 'minimum' claim checkable.
-- The agent read ap_aging/README.md and ap_aging/ci.py, but section 5 does not say whether either needs to change. For example, the README may list the public API or the version. Adding an explicit 'unchanged' row with a file: citation would close this.
-- BC-6 (version step) and BC-7's `test_existing_aging_unchanged` add lines beyond the bare functionality. Both are backed by sources (feat.tasks section 2; feat.design B3.5), but a short note on why they are kept despite the minimum-lines goal would help the gate.
-- The 'Background read' row and section 5 cite `journey:task.db_changes`. The file is listed among the files the agent read, so the citation is backed by the BE-03 output, but `file:` form would match the brief's citation convention better.
+- Section 4, 'Missing vendor' row: the minimal design reaches `inv["vendor"]` only after the paid and `days > 30` filters, so `KeyError` is raised only for an unpaid, overdue invoice (feat.tasks TSK-05 notes, CL-BE4). AC-05.10 is worded for any invoice with no `vendor`. Say that `test_overdue_missing_vendor_raises` must use an unpaid invoice more than 30 days past due, and that a paid or not-yet-overdue invoice without `vendor` is skipped without an error.
+- Section 7 cites feat.design D3 for interim answers to 'PQ-2, TQ-3, TQ-9'. D3 gives interim answers for TQ-3 (DD-3) and TQ-9 (KeyError) but not for PQ-2. PQ-2's interim answer is feat.prd P-A1/P-A2, applied in IF-5.6 and feat.design B3.2. Add those citations.
+- CQB-2 calls PQ-2 the '(sort tie-break)'. In feat.prd, PQ-2 asks to confirm P-A1 to P-A4: the meaning of `days`, the tie-break, what counts as an invalid `paid_date`, and what the end-to-end test checks. Describe the whole question or say which part applies to the Backend lane.
+- AC-06.4 (no date field in CT-1) is not mapped to any test in the CMP-7 table. `test_rows_to_json` covers AC-06.1 to AC-06.3. State that the key-order or key-set assertion also covers AC-06.4.
+- Carry task.repo_access RAQ-2 into the prerequisites or open questions: `ci.py` imports the third-party `coverage` package, and nobody has confirmed it is installed. The coverage claim in section 4 depends on that CI run.
+- The workbook outcome asks for 'minimum lines of code', but the output never says roughly how many lines each component adds. Optionally add an approximate per-component line count, clearly labelled as agent judgement, so reviewers can check the 'minimum' claim.
 
 Details: `result_attempt<N>.json` (claims with sources), `checks_attempt<N>.json`, `judge_attempt<N>.json`.

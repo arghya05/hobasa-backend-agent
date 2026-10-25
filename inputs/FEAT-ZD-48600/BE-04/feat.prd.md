@@ -1,4 +1,4 @@
-<!-- input feat.prd for BE-04: from hobasa-requirement-agent/outputs/FEAT-ZD-48600/feat.prd.md at commit 908b58d, produced by REQ-05 -->
+<!-- input feat.prd for BE-04: from final_document/e2e-run/runs/run-20261025-111239-feat-zd-48600/workspace/agents/hobasa-requirement-agent/outputs/FEAT-ZD-48600/feat.prd.md at commit 908b58d, produced by REQ-05 -->
 # feat.prd: FEAT-ZD-48600
 
 Product Requirement Document for FEAT-ZD-48600 (ZD-48600, "Show which overdue invoices belong to vendors that usually pay late"). This is a draft for the REQ-05 gate (PM).
