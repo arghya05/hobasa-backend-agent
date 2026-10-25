@@ -1,3 +1,5 @@
 {
-  "failures": []
+  "failures": [
+    "G1 judge found an unsupported statement: \"Git push credentials for `feature/<story>`. These belong to repository access, which BE-01 (task.repo_access) checks, not to application secrets. Source: feat.t\" (The citations don't support the claim about BE-01. feat.tasks section 2 only names the branch `feature/<story>`, and the BE-02 brief never mentions BE-01 or tas)"
+  ]
 }

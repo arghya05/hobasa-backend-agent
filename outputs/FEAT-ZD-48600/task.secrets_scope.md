@@ -1,55 +1,48 @@
 # task.secrets_scope: FEAT-ZD-48600
 
-Secrets scope for the Backend lane of FEAT-ZD-48600 (ZD-48600, "Show which overdue invoices belong to vendors that usually pay late"). This is step BE-02 Access to secrets (attempt 1). The file lists secret **names only**; it holds no values. org.permission_table is restricted, so this file refers to it by name and does not copy it.
+Secrets scope for the Backend lane of FEAT-ZD-48600 ("Show which overdue invoices belong to vendors that usually pay late"). This is BE-02 Access to secrets. It lists names only; no secret values appear here.
 
 | Field | Value | Source |
 |---|---|---|
 | Trace ID | FEAT-ZD-48600 | record:brief |
-| Step | BE-02 Access to secrets (attempt 1) | record:brief |
-| Inputs | feat.tasks (from hobasa-design-agent/outputs/FEAT-ZD-48600/feat.tasks.md at commit b0fd4d2); org.permission_table (restricted, by reference) | record:brief |
-| Backend tasks in scope | TSK-05 (STORY-05), TSK-06 (STORY-06) | feat.tasks (sections 1, 3) |
-| Repository | ap_aging | feat.tasks (section 1); record:brief |
+| Step | BE-02 Access to secrets | record:brief |
+| Inputs | feat.tasks (from hobasa-design-agent at commit b0fd4d2); org.permission_table (restricted, passed by reference only) | record:brief |
+| Backend tasks | TSK-05 (STORY-05) and TSK-06 (STORY-06), both in ap_aging | feat.tasks (section 1) |
+| Repository | ap_aging, GitHub remote `arghya05/ap-aging-sample` | file:ap-aging-sample/.git/config |
 
-## 1. Secrets needed by the Backend tasks
+## 1. Result
 
-| Task | What it does | Environments it touches | Secrets needed | Source |
+**No secrets are required, and none are granted. No access request is needed.**
+
+| Environment | Secrets required | Secrets granted | Access request raised | Source |
 |---|---|---|---|---|
-| TSK-05 | New pure function `overdue_with_risk(invoices, as_of, risk_by_vendor)` in `src/ap_aging/aging.py`, with its unit tests | Local build and CI only; no runtime service | None | feat.tasks (TSK-05) |
-| TSK-06 | New function `overdue_rows_to_json(rows)` in `src/ap_aging/aging.py`; no transport layer | Local build and CI only; no runtime service | None | feat.tasks (TSK-06) |
+| Local development and CI (`/usr/bin/python3 ci.py`) | None | None | No | tool:repo-access; file:ap-aging-sample/CLAUDE.md; file:ap-aging-sample/ci.py |
+| Any deployed environment | None (this feature adds no transport to ap_aging) | None | No | tool:repo-access; feat.tasks (TSK-06 "No transport layer") |
 
-Why no secrets are needed:
+## 2. Why no secret is needed
 
-- Both tasks are pure functions inside one module. TSK-06 explicitly adds no transport layer (a transport would re-trigger DES-01) (feat.tasks, TSK-06 "Must not change").
-- The feature uses only the Python 3.9 standard library for this lane and adds no new technology (feat.tasks, intro and section 8, DD-1).
-- The ap_aging source reads no environment variables, tokens or credentials and opens no network connection: `aging.py` imports only `datetime`, `decimal` and `typing` (file:ap_aging/src/ap_aging/aging.py). A search of the repository for environment-variable reads, secret, token, password, API-key and network-library patterns found no match (file:ap_aging/src/ap_aging/aging.py; file:ap_aging/ci.py).
-- CI (`ci.py`) runs locally: compile, unit tests, coverage gate and static checks. It reads no secret (file:ap_aging/ci.py).
-
-## 2. Secrets granted
-
-| Environment | Secret names granted | Source |
+| # | Finding | Source |
 |---|---|---|
-| Local development | None | tool:repo-access |
-| CI (`/usr/bin/python3 ci.py`) | None | tool:repo-access; file:ap_aging/ci.py |
-| dev / production | Not in this lane's scope: TSK-05 and TSK-06 add no deployed service | tool:repo-access; feat.tasks (TSK-06) |
+| S-1 | The permission table grants no secrets for ap_aging and states none are required | tool:repo-access (org.permission_table, by reference) |
+| S-2 | TSK-05 adds a pure function, `overdue_with_risk(invoices, as_of, risk_by_vendor)`. It takes its inputs as arguments | feat.tasks (TSK-05) |
+| S-3 | TSK-06 adds `overdue_rows_to_json(rows)`, which serialises the rows to a string. The task forbids a transport layer, because adding one would re-trigger DES-01 | feat.tasks (TSK-06) |
+| S-4 | The budgeted files are `src/ap_aging/aging.py`, `src/ap_aging/__init__.py` and the new `tests/test_overdue.py`. The only new import is `json` | feat.tasks (TSK-05, TSK-06) |
+| S-5 | Today `aging.py` imports only `datetime`, `decimal` and `typing`. It reads no environment variable, file or network resource | file:ap-aging-sample/src/ap_aging/aging.py |
+| S-6 | Neither `aging.py` nor `ci.py` contains `os.environ`, `getenv`, `secret`, `token`, `password`, `api_key` or `credential`, and neither imports `os`, `urllib`, `http` or `socket` | file:ap-aging-sample/src/ap_aging/aging.py; file:ap-aging-sample/ci.py |
+| S-7 | CI runs locally with the standard library plus `coverage`. SonarQube is not available locally, so no SonarQube token is used | file:ap-aging-sample/ci.py |
+| S-8 | The language is Python 3.9 (standard library) | file:ap-aging-sample/CLAUDE.md |
 
-The tool registry states that no secrets are required or granted for ap_aging (permission table) (tool:repo-access).
+## 3. Out of scope for this lane
 
-## 3. Gap check
+- **The LLM provider (`acme-llm`).** TSK-04 (Data Science, ap_forecast) is the only task that sends anything to `acme-llm`. The Backend lane does not call it: `overdue_with_risk` receives the vendor risk as its `risk_by_vendor` argument. Source: feat.tasks (TSK-04, TSK-05).
 
-| Check | Result | Source |
-|---|---|---|
-| Secrets needed but not granted | None | sections 1 and 2 |
-| Secrets granted but not needed (excess access) | None | tool:repo-access |
-| Access request raised | Not needed | sections 1 and 2 |
-| Secret values in this file | None (names only, and there are no names to list) | this file |
+## 4. Re-entry
 
-## 4. Outcome
-
-Secrets are available with the right access permissions for TSK-05 and TSK-06 because the tasks need none and none are granted. BE-05 Coding can go ahead with an empty secrets scope. If a later change adds a transport, a database or an external call to ap_aging, that is a design change (feat.tasks, TSK-06), and BE-02 must run again.
+The findings in section 2 rest on the scope in feat.tasks: no transport and no external call in ap_aging. If a change brings either into ap_aging, this secrets scope should be checked again (agent judgement). feat.tasks states that a transport would also re-trigger DES-01. Source: feat.tasks (TSK-06).
 
 ## 5. Open questions
 
-None blocking. None non-blocking.
+None. Nothing blocks this step.
 
 
 <!-- tool results recorded by the spine -->

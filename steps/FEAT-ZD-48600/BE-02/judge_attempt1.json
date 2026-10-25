@@ -1,16 +1,22 @@
 {
-  "unsupported": [],
+  "unsupported": [
+    {
+      "text": "Git push credentials for `feature/<story>`. These belong to repository access, which BE-01 (task.repo_access) checks, not to application secrets. Source: feat.tasks (section 2, \"Branch and commit\"); record:brief.",
+      "why": "The citations don't support the claim about BE-01. feat.tasks section 2 only names the branch `feature/<story>`, and the BE-02 brief never mentions BE-01 or task.repo_access. The fact itself is true: backend-steps SKILL.md lines 8-14 say BE-01 writes task.repo_access. But that file is not the one cited."
+    }
+  ],
   "improvements": [
-    "Section 2 splits the tool view into rows for Local development, CI and dev/production. The tool view only says 'no secrets are required or granted for this repository'. It does not mention environments. Mark the per-environment split as the agent's reading of that repository-level statement.",
-    "The dev/production row says 'Not in this lane's scope: TSK-05 and TSK-06 add no deployed service'. This is an inference from the TSK-06 'no transport layer' rule, so mark it as agent judgement. Also note that a deployment-time secret check, if one is needed, would come up again at a later deployment step.",
-    "The repository-wide search claim (no environment-variable reads, secrets, tokens, passwords, API keys or network libraries) cites only aging.py and ci.py. List the files and paths that were searched, for example src/ and tests/, so the claim can be checked. An independent grep over ap_aging found no matches, which agrees with it.",
-    "The re-run rule in section 4 says BE-02 must run again if a transport, database or external call is added. Label it as a recommendation or agent judgement. feat.tasks only says a transport would re-trigger DES-01; it does not say BE-02 runs again."
+    "Cite repository files with the repository name the brief uses (`file:ap_aging/<path>`, the checkout directory) or say why you use the remote name. The output cites `file:ap-aging-sample/...`, the GitHub remote name, so its citations don't match the checkout paths.",
+    "Line 38's citation should point to backend-steps SKILL.md (BE-01 writes task.repo_access) instead of record:brief and feat.tasks section 2.",
+    "S-6 describes a search of the whole repository (I re-ran it over ap_aging: no matches, so the claim holds), but it cites only aging.py and ci.py. tests/test_aging.py, src/ap_aging/__init__.py and README.md were also searched, so list them or cite the search as the source.",
+    "The org.permission_table is restricted and was passed by reference only. Say plainly that the decision about deployed environments rests only on the tool:repo-access summary, and that no environment list (DEV/QA/PROD) was available to check secrets per environment. The output asserts 'Any deployed environment: None' without an environment inventory.",
+    "Section 4's re-entry advice (a database or external call would re-run this step) is reasonable, but mark it as agent judgement. Only the transport \u2192 DES-01 link comes from feat.tasks."
   ],
   "scores": {
     "correct": 5,
     "complete": 4,
-    "grounded": 5,
-    "useful": 4
+    "grounded": 4,
+    "useful": 5
   },
-  "notes": "I checked every statement against feat.tasks, the tool view and record:brief. I also read ap_aging/src/ap_aging/aging.py (it imports only datetime, decimal and typing), ap_aging/ci.py (compile, unit tests, coverage gate and static checks, with no secret reads), ap_aging/CLAUDE.md (the CI command is `/usr/bin/python3 ci.py`) and the backend-steps SKILL.md (BE-05 Coding reads task.secrets_scope). All of them support the output. The following statements match feat.tasks: the task IDs TSK-05 and TSK-06, the stories STORY-05 and STORY-06, the function names, the commit b0fd4d2, 'no transport layer (would re-trigger DES-01)', and 'Python 3.9 standard library, DD-1'. The statement that no secrets are granted matches the spine tool result. An independent case-insensitive grep over ap_aging for environ, getenv, secret, token, password, api_key, requests, urllib, http and socket returned no matches. I found no invented facts, numbers or contradictions. The output meets the workbook outcome: the tasks need no secrets, none are granted, so no access request is needed. The output also lists names only and copies nothing from the restricted permission table."
+  "notes": "I checked each statement against feat.tasks (BE-02 input), the tool:repo-access view and the spine's tool result ('no secrets required or granted'), plus ap_aging's .git/config, CLAUDE.md, ci.py and aging.py. All of these are supported:\n- The remote arghya05/ap-aging-sample (.git/config line 13).\n- The CI command `/usr/bin/python3 ci.py` and Python 3.9 (ap_aging/CLAUDE.md).\n- aging.py imports only datetime, decimal and typing.\n- ci.py uses the standard library plus coverage and says 'SonarQube is not available locally'.\n- TSK-05 and TSK-06 goals, files in budget, `import json`, and 'No transport layer (a transport would re-trigger DES-01)'.\n- TSK-04 is the only task that touches acme-llm.\n- `risk_by_vendor` is passed as an argument.\n- The commit b0fd4d2.\n\nI re-ran the S-6 search (os.environ/getenv/secret/token/password/api_key/credential/os/urllib/http/socket, case-insensitive) over the ap_aging checkout, excluding .git: no matches, so the claim holds. The only grounding defect is one citation (BE-01/task.repo_access) whose cited sources don't contain the fact, although another file the agent read does. The output meets the workbook outcome: no secrets are needed, none are granted, and no access request is required. Shell commands were blocked for this step, so all checks used Read, Grep and Glob."
 }

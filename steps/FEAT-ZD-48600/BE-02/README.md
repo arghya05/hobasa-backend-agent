@@ -34,18 +34,19 @@ no file changes in this step
 
 | Attempt | Session | Problems found by the checks | Unsupported statements (judge) | Judge scores |
 |---|---|---|---|---|
-| 1 | new | 0 | 0 | {'correct': 5, 'complete': 4, 'grounded': 5, 'useful': 4} |
+| 1 | new | 1 | 1 | {'correct': 5, 'complete': 4, 'grounded': 4, 'useful': 5} |
+| 2 | continued | 0 | 0 | {'correct': 5, 'complete': 4, 'grounded': 5, 'useful': 4} |
 
 Improvements the independent judge suggests (non-blocking):
 
-- Section 2 splits the tool view into rows for Local development, CI and dev/production. The tool view only says 'no secrets are required or granted for this repository'. It does not mention environments. Mark the per-environment split as the agent's reading of that repository-level statement.
-- The dev/production row says 'Not in this lane's scope: TSK-05 and TSK-06 add no deployed service'. This is an inference from the TSK-06 'no transport layer' rule, so mark it as agent judgement. Also note that a deployment-time secret check, if one is needed, would come up again at a later deployment step.
-- The repository-wide search claim (no environment-variable reads, secrets, tokens, passwords, API keys or network libraries) cites only aging.py and ci.py. List the files and paths that were searched, for example src/ and tests/, so the claim can be checked. An independent grep over ap_aging found no matches, which agrees with it.
-- The re-run rule in section 4 says BE-02 must run again if a transport, database or external call is added. Label it as a recommendation or agent judgement. feat.tasks only says a transport would re-trigger DES-01; it does not say BE-02 runs again.
+- S-4 says "The only new import is `json`". That is true at module level, but TSK-05 also adds `List` to the existing `typing` import (feat.tasks TSK-05, Files in budget). Say "the only new module imported is `json`" so the statement exactly matches the source.
+- Section 3 says TSK-04 "is the only task that sends anything to `acme-llm`". feat.tasks does not say this directly. It mentions `acme-llm` only under TSK-04, and that function builds the explanation request (the text sent to the LLM). Wording such as "the only task that mentions `acme-llm`; it builds the explanation request" would match the source more closely.
+- The citations use `file:ap-aging-sample/...`, which is the GitHub remote name, while the checkout directory is `ap_aging`. Say once that they are the same repository, so readers can follow the citation path.
+- The 'Any deployed environment' row relies on the permission-table tool view, which covers the repository as a whole, not each environment. Say that the tool view does not name environments, so this row is an inference from 'no secrets required or granted' for ap_aging.
 
 ## How the agent worked
 
-- **Approach:** I read feat.tasks to find the Backend tasks for ap_aging: TSK-05 (overdue_with_risk) and TSK-06 (overdue_rows_to_json). Both are pure functions in src/ap_aging/aging.py, use only the standard library and add no transport layer. I compared that with the tool view for the restricted org.permission_table, which says no secrets are required or granted for ap_aging. To confirm the code needs none, I read aging.py and ci.py and searched the repository for environment-variable, secret, token, password, API-key and network patterns. Nothing matched. I wrote task.secrets_scope with secret names only. The scope is empty, there is no gap and no excess, and no access request was needed. I used no connectors because the inputs and the repository held all the facts.
+- **Approach:** I read feat.tasks to find the Backend tasks: TSK-05 and TSK-06, both in ap_aging. org.permission_table is restricted and passed by reference only, so I used the permission-table tool view (tool:repo-access) for it. To check that view against the code, I read aging.py, ci.py, CLAUDE.md and .git/config in the ap_aging checkout and searched it for environment, credential and network-import patterns. There were no matches. Both tasks are pure functions with no transport, so no secret is needed or granted and I raised no access request. I removed the statement about git push credentials, because no input supports it. I also marked the re-entry advice as agent judgement and cite only what feat.tasks states. I did not use the connectors, because the inputs held all the facts.
 - **Tools used:** Skill (backend-steps), Read, Grep, Glob, Write
 - **Helper subagents:** none
 - **Connector calls:** none

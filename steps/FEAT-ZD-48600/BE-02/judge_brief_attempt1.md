@@ -15,8 +15,10 @@
 [Tool result] [ap_aging] Tool registry: no secrets required or granted (permission table)
 
 ## Other GitHub files the agent read (valid sources when cited as file:<repository>/<path>)
+- `~/.claude/projects/-Users-arghyamukherjee-Documents-automaiton-final-document-e2e-run-runs-run-20261025-205213-feat-zd-48600-workspace-ap-aging/86a07bc4-e489-4a67-a769-82391c0f297c/tool-results/hook-66ce1f07-91ea-473c-9092-7c00646dbb70-1-additionalContext.txt`
 - `hobasa-backend-agent/.claude/skills/backend-steps/SKILL.md`
 - `hobasa-backend-agent/CLAUDE.md`
+- `ap-aging-sample/.git/config`
 - `ap-aging-sample/CLAUDE.md`
 - `ap-aging-sample/ci.py`
 - `ap-aging-sample/src/ap_aging/aging.py`
@@ -55,4 +57,4 @@ Decide the best way to do this step from the inputs and the workbook action, pla
 ## Tool view (cite as tool:repo-access)
 Tool registry for ap_aging: no secrets are required or granted for this repository (permission table).
 
-Finish with the structured result: approach, tools_used, claims (each citing an input item name, a tool view, api:<name>, mcp:<server>, file:<repository>/<path> for any other GitHub file you read, record:intake, record:owner_answer, record:memory or record:brief for this brief; a claim drawing on several sources lists them separated by ';'; every number must appear in what you cite), open questions (BLOCKING: only when you cannot finish), summary.
+Finish with the structured result: approach, tools_used, claims (each citing an input item name, a tool view, api:<name>, mcp:<server>, file:<repository>/<path> for any other GitHub file you read, record:intake, record:owner_answer, record:memory or record:brief for this brief; a claim drawing on several sources lists them separated by ';'; every number must appear in what you cite), open questions (anything missing or unclear: BLOCKING: <what you need and who should answer>; never assume), summary.
