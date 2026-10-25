@@ -1,5 +1,3 @@
 {
-  "failures": [
-    "G1 judge found an unsupported statement: \"| Secrets | Out of scope for this step (step BE-02) | record:brief |\" (The cited source does not support the claim. The BE-01 brief (record:brief) never mentions secrets or step BE-02. The fact itself is correct: hobasa-backend-age)"
-  ]
+  "failures": []
 }
