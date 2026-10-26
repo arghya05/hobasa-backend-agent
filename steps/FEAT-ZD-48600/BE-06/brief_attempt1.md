@@ -7,17 +7,17 @@
 - Gate (who approves this output): no gate: automated checks, the independent judge and sampled human evaluation
 
 ## Inputs (GitHub checkout; read them with Read, or context_get for a receipt)
-- task.code (Code changes on the working branch): `hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-06/task.code.md` (from hobasa-backend-agent/outputs/FEAT-ZD-48600/task.code.md at commit d64e6de)
+- task.code (Code changes on the working branch): `hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-06/task.code.md` (from hobasa-backend-agent/outputs/FEAT-ZD-48600/task.code.md at commit a275c72)
 - feat.stories (Epics, stories and tasks with numbered AC, frame links, assumptions and open items (latest revision)): `hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-06/feat.stories.md` (from hobasa-requirement-agent/outputs/FEAT-ZD-48600/feat.stories.md at commit 0590ea4)
 
 ## Outputs (write each file in full; the spine commits and pushes after evaluation and approval)
 - task.unit_tests (Unit tests and coverage (≥90%)): write `hobasa-backend-agent/outputs/FEAT-ZD-48600/task.unit_tests.md`
 
 ## Code
-Work in repository `ap-aging-sample` (Python 3.9 (standard library)). You may change only: tests/. Run the CI yourself with `/usr/bin/python3 ci.py` from the repository root (or delegate to the ci-runner subagent) until it passes. Do not commit or push; the spine does.
+Work in repository `ap-aging-sample` (Python 3.9 (standard library)). You may change only: tests/. Understand before you change: the repository is indexed with CodeGraph. Before editing, use it (MCP tools codegraph_explore and codegraph_node with projectPath `ap-aging-sample`, or `codegraph explore <symbols>`, `codegraph impact <symbol>`, `codegraph callers <symbol>`) to read the exact source of what you change, its callers and callees and the blast radius. After editing, run `codegraph sync` and `codegraph affected <changed files>` to find the tests your change touches, and run them through the CI. Shell commands allowed in this step: `/usr/bin/python3 ci.py`, `git status`, `git diff`, `git log`, `codegraph explore`, `codegraph node`, `codegraph callers`, `codegraph callees`, `codegraph impact`, `codegraph affected`, `codegraph query`, `codegraph files`, `codegraph status`, `codegraph sync`. Run the CI yourself with `/usr/bin/python3 ci.py` from the repository root (or delegate to the ci-runner subagent) until it passes. Do not commit or push; the spine does.
 
 ## How to work
-Decide the best way to do this step from the inputs and the workbook action, plan it (TodoWrite for multi-part work), then do it. Helper subagents you can delegate to: explorer, verifier, ci-runner (use the verifier before you finish when the output makes many factual statements). Use the shared memory (memory_search) for decisions and lessons. Connectors approved for you: api:osv (Known vulnerabilities for a dependency version (POST /v1/query with {"package":{"name":...,"ecosystem":"PyPI|npm"},"version":...})), api:pypi (Python package metadata: latest version, licence, release dates (GET /pypi/<package>/json)). Use one only when your inputs do not hold what you need; request a missing one with capability_request. You may also read any other file in the GitHub checkouts your step needs (for example other requirements when grouping, or code); cite it as file:<repository>/<path>.
+Decide the best way to do this step from the inputs and the workbook action, plan it (TodoWrite for multi-part work), then do it. Helper subagents you can delegate to: explorer, verifier, ci-runner (use the verifier before you finish when the output makes many factual statements). Use the shared memory (memory_search) for decisions and lessons. Connectors approved for you: api:osv (Known vulnerabilities for a dependency version (POST /v1/query with {"package":{"name":...,"ecosystem":"PyPI|npm"},"version":...})), api:pypi (Python package metadata: latest version, licence, release dates (GET /pypi/<package>/json)), mcp:codegraph (Code intelligence over the repository: a symbol's source, its callers and callees, the blast radius of a change and the tests it affects (codegraph_explore, codegraph_node and related tools; pass projectPath = the repository checkout)). Use one only when your inputs do not hold what you need; request a missing one with capability_request. You may also read any other file in the GitHub checkouts your step needs (for example other requirements when grouping, or code); cite it as file:<repository>/<path>.
 
 ## Tool view (cite as tool:repo)
 --- ap_aging/src/ap_aging/__init__.py ---
@@ -35,10 +35,8 @@ from decimal import Decimal
 from typing import Dict, Iterable, List
 
 BUCKETS = ("current", "1-30", "31-60", "61-90", "90+")
-
-# FEAT-ZD-48600: an invoice is overdue when strictly more than this many calendar days past due (exactly 30 is not).
+# An invoice is overdue when strictly more than this many calendar days past due (exactly 30 is not listed).
 OVERDUE_AFTER_DAYS = 30
-# Two-decimal quantum for money; Decimal only, never float (D-2026-044).
 TWO_PLACES = Decimal("0.01")
 
 
@@ -71,28 +69,45 @@ def aging_buckets(invoices: Iterable[Dict], as_of: date) -> Dict[str, Decimal]:
 
 def overdue_with_risk(invoices: Iterable[Dict], as_of: date, risk_by_vendor: Dict[str, str]) -> List[Dict]:
     """Unpaid invoices more than 30 calendar days past due as of as_of, as rows
-    {'id', 'vendor', 'days', 'amount' (Decimal, 2 dp), 'risk'}, sorted by days descending then id ascending."""
+    {'id', 'vendor', 'days', 'amount' (Decimal, 2 dp), 'risk'}, sorted by days descending then id ascending.
+
+    A vendor missing from risk_by_vendor gets risk 'unknown'. An overdue unpaid invoice without 'vendor' raises KeyError.
+    Pure: the inputs are not modified.
+    """
     rows = []
     for inv in invoices:
-        # Same paid test as aging_buckets: paid invoices are excluded (D-2026-050).
         if inv.get("paid"):
             continue
         days = days_past_due(inv["due_date"], as_of)
-        # Own threshold, not bucket_for: bucket_for(30) is "31-60", but exactly 30 days is not overdue here.
-        if days > OVERDUE_AFTER_DAYS:
-            # inv["vendor"] has no default on purpose: a missing vendor raises KeyError instead of hiding the row.
-            rows.append({"id": inv["id"], "vendor": inv["vendor"], "days": days,
-                         "amount": Decimal(inv["amount"]).quantize(TWO_PLACES),
-                         "risk": risk_by_vendor.get(inv["vendor"], "unknown")})
+        # Not bucket_for: bucket_for(30) is "31-60", but an invoice exactly 30 days past due must not be listed.
+        if days <= OVERDUE_AFTER_DAYS:
+            continue
+        rows.append({
+            "id": inv["id"],
+            "vendor": inv["vendor"],
+            "days": days,
+            "amount": Decimal(inv["amount"]).quantize(TWO_PLACES),
+            "risk": risk_by_vendor.get(inv["vendor"], "unknown"),
+        })
     rows.sort(key=lambda row: (-row["days"], row["id"]))
     return rows
 
 
 def overdue_rows_to_json(rows: Iterable[Dict]) -> str:
-    """CT-1: JSON array of {id, vendor, days (int), amount (two-decimal string), risk}; '[]' when empty."""
-    # Keys are written in CT-1 order; amount goes out as a string so no float ever touches it (L-011).
-    return json.dumps([{"id": r["id"], "vendor": r["vendor"], "days": int(r["days"]),
-                        "amount": str(Decimal(r["amount"]).quantize(TWO_PLACES)), "risk": r["risk"]} for r in rows])
+    """CT-1: JSON array of {id, vendor, days (int), amount (two-decimal string), risk}; '[]' when empty.
+
+    Rows keep their order. The amount goes Decimal -> str, never through float, so "1250.00" stays exact.
+    """
+    return json.dumps([
+        {
+            "id": r["id"],
+            "vendor": r["vendor"],
+            "days": int(r["days"]),
+            "amount": str(Decimal(r["amount"]).quantize(TWO_PLACES)),
+            "risk": r["risk"],
+        }
+        for r in rows
+    ])
 
 --- ap_aging/tests/__init__.py ---
 
@@ -130,4 +145,4 @@ if __name__ == "__main__":
     unittest.main()
 
 
-Finish with the structured result: approach, tools_used, claims (each citing an input item name, a tool view, api:<name>, mcp:<server>, file:<repository>/<path> for any other GitHub file you read, record:intake, record:owner_answer, record:memory or record:brief for this brief; a claim drawing on several sources lists them separated by ';'; every number must appear in what you cite), open questions (BLOCKING: only when you cannot finish), summary.
+Finish with the structured result: approach, tools_used, claims (each citing an input item name, a tool view, api:<name>, mcp:<server>, file:<repository>/<path> for any other GitHub file you read, record:intake, record:owner_answer, record:memory or record:brief for this brief; a claim drawing on several sources lists them separated by ';'; every number must appear in what you cite), open questions (anything missing or unclear: BLOCKING: <what you need and who should answer>; never assume), summary.

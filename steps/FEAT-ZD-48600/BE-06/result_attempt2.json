@@ -1,62 +1,68 @@
 {
   "structured": {
-    "approach": "I fixed both refusal reasons. G3: claims and the output no longer quote test counts, coverage percentages or missed line numbers, because no cited item contains them. The exact figures stay in the JSON line ci.py prints for the spine's CI record, which is what task.code already does. G2: in this session I read ci.py and tests/test_overdue.py, and the test file now also appears in the tool view, so I cite it as tool:repo. The tests are unchanged from attempt 1. I re-ran /usr/bin/python3 ci.py in this session and it passed. I rewrote task.unit_tests.md in full: a table mapping each acceptance criterion to its test, the CI outcome before and after the new tests, and open questions.",
+    "approach": "I read the two inputs (task.code and feat.stories) and followed the backend-steps procedure for BE-06. Before editing, I used CodeGraph to see the source and blast radius of overdue_with_risk and overdue_rows_to_json; it showed that neither function had a covering test. I added tests only in tests/test_aging.py, as TK-05.2 and SA-6 ask. They cover AC-05.1 to AC-05.10 and AC-06.1 to AC-06.4, plus checks that inputs are not modified and that the package exports the new functions. All test data is synthetic. I left out tests for behaviour that still waits on open questions: bucket_for(30) (TQ-1), rounding of amounts with more than two decimals (DQ-2), the version number (Q-2) and a missing vendor on a paid or not-yet-overdue invoice. I ran /usr/bin/python3 ci.py until it passed, then ran codegraph sync and codegraph affected. Finally I read the finished test file and wrote task.unit_tests.md from what is actually in it.",
     "tools_used": [
-      "Bash (/usr/bin/python3 ci.py)",
+      "Skill (backend-steps)",
       "Read",
+      "Bash: codegraph explore",
+      "Bash: /usr/bin/python3 ci.py",
+      "Edit",
+      "Bash: codegraph sync / codegraph affected",
+      "Bash: git status / git diff --stat",
       "Write"
     ],
     "claims": [
       {
-        "text": "The CI coverage gate is COVERAGE_MIN = 90.0, and CI passes only when the code compiles, the tests succeed, coverage reaches the gate and there are no static issues",
-        "source": "file:ap_aging/ci.py"
+        "text": "CI checks compilation, unit tests, coverage of at least COVERAGE_MIN = 90.0 and simple static checks, and passes only when all of them pass. The CI run on the working tree passed with no test failures and no static issues.",
+        "source": "file:ap_aging/ci.py; tool:ci"
       },
       {
-        "text": "Before the new tests, line coverage was below the gate of 90%, because the bodies of the two new functions and the bucket_for 'return \"1-30\"' branch had no tests",
-        "source": "task.code"
+        "text": "The tests are added to tests/test_aging.py as two new classes, OverdueWithRiskTest and OverdueRowsToJsonTest. The existing AgingTest class is unchanged.",
+        "source": "file:ap_aging/tests/test_aging.py"
       },
       {
-        "text": "With tests/test_overdue.py added, CI passes: the code compiles, all tests pass, both src/ap_aging files are fully covered (above the gate of 90%), and the static checks report no issues",
-        "source": "tool:repo; file:ap_aging/ci.py"
+        "text": "test_overdue_boundary_30_and_31 checks that an unpaid invoice 31 days past due is listed and one exactly 30 days past due is not, as AC-05.1, AC-05.2 and lesson L-007 require.",
+        "source": "feat.stories; record:memory; file:ap_aging/tests/test_aging.py"
       },
       {
-        "text": "The new tests are in tests/test_overdue.py, the file task.components BC-7 plans; feat.stories SA-6 allows a lane to add a new test file",
-        "source": "task.code; feat.stories; tool:repo"
+        "text": "test_overdue_row_keys_and_sort checks that each row has exactly the keys id, vendor, days, amount and risk, and that rows are ordered by days descending and then id ascending, so SYN-INV-002 comes before SYN-INV-003 (AC-05.5, AC-05.6).",
+        "source": "feat.stories; file:ap_aging/tests/test_aging.py"
       },
       {
-        "text": "Tests check that an invoice exactly 30 days past due is not listed and one 31 days past due is listed, with days taken from days_past_due (AC-05.1, AC-05.2, lesson L-007)",
-        "source": "feat.stories; record:memory; tool:repo"
+        "text": "The tests check that Decimal(\"980.5\") becomes \"980.50\" in rows and in JSON, and that the CT-1 payload contains \"amount\": \"1250.00\" with no float conversion (AC-05.8, AC-06.2, D-2026-044, L-011).",
+        "source": "feat.stories; record:memory; file:ap_aging/tests/test_aging.py"
       },
       {
-        "text": "Tests check that a paid invoice (90 days) and a not-yet-due invoice are not listed, that rows have the five keys, the sort by days descending then id ascending as text (SYN-INV-002 before SYN-INV-003 at 42 days), 'unknown' risk, Decimal 980.5 quantised to 980.50, no call to bucket_for, and KeyError for a missing vendor (AC-05.3 to AC-05.10)",
-        "source": "feat.stories; tool:repo"
+        "text": "test_existing_aging_unchanged patches bucket_for so that it raises if called, then confirms overdue_with_risk still returns its row. This verifies AC-05.9.",
+        "source": "feat.stories; tool:repo; file:ap_aging/tests/test_aging.py"
       },
       {
-        "text": "Tests check the CT-1 JSON: same order, CT-1 key order, days as an int, amount as a two-decimal string such as 1250.00, '[]' for an empty list, and no date field (AC-06.1 to AC-06.4)",
-        "source": "feat.stories; tool:repo"
+        "text": "overdue_rows_to_json([]) is checked to return \"[]\", and each serialised object is checked to have no due_date field (AC-06.3, AC-06.4).",
+        "source": "feat.stories; file:ap_aging/tests/test_aging.py"
       },
       {
-        "text": "bucket_for(1) and bucket_for(29) now cover the '1-30' branch raised as CQ-BE-3, and bucket_for(30) still returns '31-60'",
-        "source": "task.code; tool:repo"
+        "text": "overdue_with_risk reads inv[\"vendor\"] only after the paid and threshold checks. So only an overdue unpaid invoice without vendor raises KeyError, while AC-05.10 says that any invoice with no vendor key raises.",
+        "source": "tool:repo; task.code; feat.stories"
       },
       {
-        "text": "Only tests/ was changed in this step; tests/test_aging.py and the source files are unchanged",
-        "source": "tool:repo; record:brief"
+        "text": "Every test name that task.code section 3 lists for BE-06 exists in tests/test_aging.py.",
+        "source": "task.code; file:ap_aging/tests/test_aging.py"
       }
     ],
     "open_questions": [
-      "UQ-BE-1 (non-blocking, tied to TQ-9): AC-05.10 says a missing vendor raises KeyError, but the code reads vendor only for invoices it lists. A paid, not-yet-due or exactly-30-days invoice with no vendor raises nothing. Should a missing vendor raise for every invoice?",
-      "Carried unchanged (non-blocking): TQ-1, TQ-3, TQ-9, PQ-2. The tests pin today's interim designs and must change if an answer changes a [Pending] criterion."
+      "UT-1 (non-blocking): AC-05.10 [Pending TQ-9] says any invoice with no vendor key raises KeyError, but the code raises only for an overdue unpaid invoice. Which behaviour is intended? Only the overdue unpaid case is tested. Architect (TQ-9) / PM.",
+      "UT-2 (non-blocking): codegraph affected reported 'No test files affected' for tests/test_aging.py and src/ap_aging/aging.py, even though the test file imports ap_aging.aging. The full CI suite was run instead. Platform team (CodeGraph).",
+      "Carried unchanged: task.code Q-2 (confirm version), PQ-2, TQ-1 (bucket_for(30) is deliberately not tested), TQ-3, TQ-9, DQ-2 (rounding mode is not tested), CQ-6."
     ],
-    "summary": "The unit tests in tests/test_overdue.py cover STORY-05 overdue_with_risk (AC-05.1 to AC-05.10), STORY-06 overdue_rows_to_json (AC-06.1 to AC-06.4), and the existing aging functions, including the bucket_for '1-30' branch from CQ-BE-3. CI passes: all tests pass, both source files are fully covered (above the gate of 90%), and there are no static issues. The exact counts are in the spine's CI record. task.unit_tests.md has been rewritten without numbers that no source contains and without citations to files I had not read. One question remains open and does not block anything: UQ-BE-1, whether a missing vendor should raise KeyError for invoices that are not listed."
+    "summary": "I added unit tests to ap_aging tests/test_aging.py for overdue_with_risk (AC-05.1 to AC-05.10) and overdue_rows_to_json (AC-06.1 to AC-06.4). The tests also check that inputs are not modified and that the package exports the new functions. CI passes: every test passes, coverage meets the COVERAGE_MIN = 90.0 gate, and there are no static issues; this clears task.code Q-1. The tests do not cover behaviour that still waits on open questions (TQ-1, DQ-2, Q-2). UT-1 asks whether the KeyError in AC-05.10 should apply to every invoice without a vendor or only to overdue unpaid ones. task.unit_tests.md is written and nothing is committed."
   },
   "meta": {
     "subtype": "success",
     "is_error": false,
     "num_turns": 6,
-    "session_id": "3380cc0a-545f-4904-9d8c-a63cb34e126a",
-    "total_cost_usd": 1.1547786,
+    "session_id": "f9ba0248-40f8-4003-93e3-4cef9c8aefa7",
+    "total_cost_usd": 1.2824706000000001,
     "permission_denials": [],
-    "result": "{\"approach\":\"I fixed both refusal reasons. G3: claims and the output no longer quote test counts, coverage percentages or missed line numbers, because no cited item contains them. The exact figures stay in the JSON line ci.py prints for the spine's CI record, which is what task.code already does. G2: in this session I read ci.py and tests/test_overdue.py, and the test file now also appears in the tool view, so I cite it as tool:repo. The tests are unchanged from attempt 1. I re-ran /usr/bin/python3 ci.py in this session and it passed. I rewrote task.unit_tests.md in full: a table mapping each acceptance criterion to its test, the CI outcome before and after the new tests, and open questions.\",\"tools_used\":[\"Bash (/usr/bin/python3 ci.py)\",\"Read\",\"Write\"],\"claims\":[{\"text\":\"The CI coverage gate is COVERAGE_MIN = 90.0, and CI passes only when the code compiles, the tests succeed, coverage reaches the gate and there are no static issues\",\"source\":\"file:ap_aging/ci.py\"},{\"text\":\"Before the new tests, line coverage was below the gate of 90%, because the bodies of the two new functions and the bucket_for 'return \\\"1-30\\\"' branch had no tests\",\"source\":\"task.code\"},{\"text\":\"With tests/test_overdue.py added, CI passes: the code compiles, all tests pass, both src/ap_aging files are fully covered (above the gate of 90%), and the static checks report no issues\",\"source\":\"tool:repo; file:ap_aging/ci.py\"},{\"text\":\"The new tests are in tests/test_overdue.py, the file task.components BC-7 plans; feat.stories SA-6 allows a lane to add a new test file\",\"source\":\"task.code; feat.stories; tool:repo\"},{\"text\":\"Tests check that an invoice exactly 30 days past due is not listed and one 31 days past due is listed, with days taken from days_past_due (AC-05.1, AC-05.2, lesson L-007)\",\"source\":\"feat.stories; record:memory; tool:repo\"},{\"text\":\"Tests check that a paid invoice (90 days) and a not-yet-due invoice are not listed, that rows have the five keys, the sort by days descending then id ascending as text (SYN-INV-002 before SYN-INV-003 at 42 days), 'unknown' risk, Decimal 980.5 quantised to 980.50, no call to bucket_for, and KeyError for a missing vendor (AC-05.3 to AC-05.10)\",\"source\":\"feat.stories; tool:repo\"},{\"text\":\"Tests check the CT-1 JSON: same order, CT-1 key order, days as an int, amount as a two-decimal string such as 1250.00, '[]' for an empty list, and no date field (AC-06.1 to AC-06.4)\",\"source\":\"feat.stories; tool:repo\"},{\"text\":\"bucket_for(1) and bucket_for(29) now cover the '1-30' branch raised as CQ-BE-3, and bucket_for(30) still returns '31-60'\",\"source\":\"task.code; tool:repo\"},{\"text\":\"Only tests/ was changed in this step; tests/test_aging.py and the source files are unchanged\",\"source\":\"tool:repo; record:brief\"}],\"open_questions\":[\"UQ-BE-1 (non-blocking, tied to TQ-9): AC-05.10 says a missing vendor raises KeyError, but the code reads vendor only for invoices it lists. A paid, not-yet-due or exactly-30-days invoice with no vendor raises nothing. Should a missing vendor raise for every invoice?\",\"Carried unchanged (non-blocking): TQ-1, TQ-3, TQ-9, PQ-2. The tests pin today's interim designs and must change if an answer changes a [Pending] criterion.\"],\"summary\":\"The unit tests in tests/test_overdue.py cover STORY-05 overdue_with_risk (AC-05.1 to AC-05.10), STORY-06 overdue_rows_to_json (AC-06.1 to AC-06.4), and the existing aging functions, including the bucket_for '1-30' branch from CQ-BE-3. CI passes: all tests pass, both source files are fully covered (above the gate of 90%), and there are no static issues. The exact counts are in the spine's CI record. task.unit_tests.md has been rewritten without numbers that no source contains and without citations to files I had not read. One question remains open and does not block anything: UQ-BE-1, whether a missing vendor should raise KeyError for invoices that are not listed.\"}"
+    "result": "{\"approach\":\"I read the two inputs (task.code and feat.stories) and followed the backend-steps procedure for BE-06. Before editing, I used CodeGraph to see the source and blast radius of overdue_with_risk and overdue_rows_to_json; it showed that neither function had a covering test. I added tests only in tests/test_aging.py, as TK-05.2 and SA-6 ask. They cover AC-05.1 to AC-05.10 and AC-06.1 to AC-06.4, plus checks that inputs are not modified and that the package exports the new functions. All test data is synthetic. I left out tests for behaviour that still waits on open questions: bucket_for(30) (TQ-1), rounding of amounts with more than two decimals (DQ-2), the version number (Q-2) and a missing vendor on a paid or not-yet-overdue invoice. I ran /usr/bin/python3 ci.py until it passed, then ran codegraph sync and codegraph affected. Finally I read the finished test file and wrote task.unit_tests.md from what is actually in it.\",\"tools_used\":[\"Skill (backend-steps)\",\"Read\",\"Bash: codegraph explore\",\"Bash: /usr/bin/python3 ci.py\",\"Edit\",\"Bash: codegraph sync / codegraph affected\",\"Bash: git status / git diff --stat\",\"Write\"],\"claims\":[{\"text\":\"CI checks compilation, unit tests, coverage of at least COVERAGE_MIN = 90.0 and simple static checks, and passes only when all of them pass. The CI run on the working tree passed with no test failures and no static issues.\",\"source\":\"file:ap_aging/ci.py; tool:ci\"},{\"text\":\"The tests are added to tests/test_aging.py as two new classes, OverdueWithRiskTest and OverdueRowsToJsonTest. The existing AgingTest class is unchanged.\",\"source\":\"file:ap_aging/tests/test_aging.py\"},{\"text\":\"test_overdue_boundary_30_and_31 checks that an unpaid invoice 31 days past due is listed and one exactly 30 days past due is not, as AC-05.1, AC-05.2 and lesson L-007 require.\",\"source\":\"feat.stories; record:memory; file:ap_aging/tests/test_aging.py\"},{\"text\":\"test_overdue_row_keys_and_sort checks that each row has exactly the keys id, vendor, days, amount and risk, and that rows are ordered by days descending and then id ascending, so SYN-INV-002 comes before SYN-INV-003 (AC-05.5, AC-05.6).\",\"source\":\"feat.stories; file:ap_aging/tests/test_aging.py\"},{\"text\":\"The tests check that Decimal(\\\"980.5\\\") becomes \\\"980.50\\\" in rows and in JSON, and that the CT-1 payload contains \\\"amount\\\": \\\"1250.00\\\" with no float conversion (AC-05.8, AC-06.2, D-2026-044, L-011).\",\"source\":\"feat.stories; record:memory; file:ap_aging/tests/test_aging.py\"},{\"text\":\"test_existing_aging_unchanged patches bucket_for so that it raises if called, then confirms overdue_with_risk still returns its row. This verifies AC-05.9.\",\"source\":\"feat.stories; tool:repo; file:ap_aging/tests/test_aging.py\"},{\"text\":\"overdue_rows_to_json([]) is checked to return \\\"[]\\\", and each serialised object is checked to have no due_date field (AC-06.3, AC-06.4).\",\"source\":\"feat.stories; file:ap_aging/tests/test_aging.py\"},{\"text\":\"overdue_with_risk reads inv[\\\"vendor\\\"] only after the paid and threshold checks. So only an overdue unpaid invoice without vendor raises KeyError, while AC-05.10 says that any invoice with no vendor key raises.\",\"source\":\"tool:repo; task.code; feat.stories\"},{\"text\":\"Every test name that task.code section 3 lists for BE-06 exists in tests/test_aging.py.\",\"source\":\"task.code; file:ap_aging/tests/test_aging.py\"}],\"open_questions\":[\"UT-1 (non-blocking): AC-05.10 [Pending TQ-9] says any invoice with no vendor key raises KeyError, but the code raises only for an overdue unpaid invoice. Which behaviour is intended? Only the overdue unpaid case is tested. Architect (TQ-9) / PM.\",\"UT-2 (non-blocking): codegraph affected reported 'No test files affected' for tests/test_aging.py and src/ap_aging/aging.py, even though the test file imports ap_aging.aging. The full CI suite was run instead. Platform team (CodeGraph).\",\"Carried unchanged: task.code Q-2 (confirm version), PQ-2, TQ-1 (bucket_for(30) is deliberately not tested), TQ-3, TQ-9, DQ-2 (rounding mode is not tested), CQ-6.\"],\"summary\":\"I added unit tests to ap_aging tests/test_aging.py for overdue_with_risk (AC-05.1 to AC-05.10) and overdue_rows_to_json (AC-06.1 to AC-06.4). The tests also check that inputs are not modified and that the package exports the new functions. CI passes: every test passes, coverage meets the COVERAGE_MIN = 90.0 gate, and there are no static issues; this clears task.code Q-1. The tests do not cover behaviour that still waits on open questions (TQ-1, DQ-2, Q-2). UT-1 asks whether the KeyError in AC-05.10 should apply to every invoice without a vendor or only to overdue unpaid ones. task.unit_tests.md is written and nothing is committed.\"}"
   }
 }

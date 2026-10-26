@@ -1,0 +1,18 @@
+{
+  "structured": {
+    "approach": "",
+    "tools_used": [],
+    "claims": [],
+    "open_questions": [],
+    "summary": "Request timed out"
+  },
+  "meta": {
+    "subtype": "success",
+    "is_error": true,
+    "num_turns": 2,
+    "session_id": "f9ba0248-40f8-4003-93e3-4cef9c8aefa7",
+    "total_cost_usd": 6.868546799999997,
+    "permission_denials": [],
+    "result": "Request timed out"
+  }
+}

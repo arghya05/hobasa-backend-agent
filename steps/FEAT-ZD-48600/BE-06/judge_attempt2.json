@@ -1,0 +1,21 @@
+{
+  "unsupported": [
+    {
+      "text": "The CI run (`/usr/bin/python3 ci.py` from the repository root) compiles, runs every test in `tests/` without failures or errors, reports no static issues, and passes the coverage gate",
+      "why": "The only recorded CI result for this step is \"Unit tests: 16 run, 0 failing; coverage 100.0%\". No tool view reports the static-check outcome (or the compile result) for this step. file:ap_aging/ci.py defines the static checks but says nothing about their result. \"Reports no static issues\" is therefore a CI result that no source states."
+    }
+  ],
+  "improvements": [
+    "The output never states the measured figures; it only points to the spine's Tool results. The workbook outcome (\u226590% coverage, unit testing completed) would read more clearly if section 1 cited the recorded tool result for the count and coverage (16 run, 0 failing, 100.0%). That count matches the file: 3 tests in AgingTest, 10 in OverdueWithRiskTest and 3 in OverdueRowsToJsonTest.",
+    "\"No file outside `tests/` was changed by this step (record:brief)\": the brief sets the write scope but does not show what was actually changed. Cite `git status`/`git diff` output, or say this follows from the scope restriction.",
+    "UT-2 quotes CodeGraph outputs (\"No test files affected\", \"Already up to date\") that are not in the recorded tool results, so a reviewer cannot check them. Record them, or mark them as observed in the agent's own session.",
+    "Section 2 says `AgingTest` is \"unchanged\", but the agent read only the current file. No diff is cited to show the class was left untouched (the methods do match the class's original three tests)."
+  ],
+  "scores": {
+    "correct": 4,
+    "complete": 5,
+    "grounded": 4,
+    "useful": 4
+  },
+  "notes": "I checked the output against tests/test_aging.py, ci.py, task.code, feat.stories, the tool view and the spine's tool result. Every test name, assertion, value and AC mapping matches the test file. Examples: SYN-INV-007/002/003/001 come out with days 90/42/42/31; 980.5 becomes 980.50 and 1250 becomes 1250.00; Decimal(\"15\") serialises as \"15.00\"; bucket_for gives 1-30 for 1 and 29, 31-60 for 60 and 61-90 for 61. All 8 tests that task.code section 3 lists exist. TK-05.2, SA-6, TK-08.1, AC-05.10 wording, SQ-2/TQ-1, DQ-2 and Q-2 are all in the sources as cited. The 16 tests in the file match the recorded \\\"16 run, 0 failing; coverage 100.0%\\\", which meets the 90.0 gate. UT-1 is a correct reading of the code, which reads vendor only after the paid and threshold checks. The one unsupported item is the claim that the CI reported no static issues; no recorded tool result states it."
+}

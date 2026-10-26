@@ -1,53 +1,60 @@
-# BE-06 Unit Test Cases (Backend agent)
+# BE-06 · Unit Test Cases
 
-**Item:** FEAT-ZD-48600 · **status:** done
-**Trigger:** Code completion  
-**Action:** Write the unit test cases to cover the updated or newly written code as per the requirement documents with at least 90 percent of the code coverage ²  
-**Outcome expected:** Unit testing completed
+**Agent:** Backend · **Item:** FEAT-ZD-48600 · **Status:** ⛔ blocked
+**Approved by:** automated checks and the independent judge
 
-## Inputs (what the agent was given)
+**What this step does:** Write the unit test cases to cover the updated or newly written code as per the requirement documents with at least 90 percent of the code coverage ²
 
-| Item | Prepared input (this repository) | Read from (producer in GitHub) | Commit | Produced by |
+**Expected outcome:** Unit testing completed
+
+**Started by:** Code completion
+
+## Input: what the agent received
+
+| # | Input | What it is | Produced by | Open |
 |---|---|---|---|---|
-| task.code | hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-06/task.code.md | hobasa-backend-agent/outputs/FEAT-ZD-48600/task.code.md | 286af9a | BE-05 |
-| feat.stories | hobasa-backend-agent/inputs/FEAT-ZD-48600/BE-06/feat.stories.md | hobasa-requirement-agent/outputs/FEAT-ZD-48600/feat.stories.md | 0590ea4 | REQ-08 |
+| 1 | `task.code` | Code changes on the working branch | Backend agent · BE-05 | [input copy](https://github.com/arghya05/hobasa-backend-agent/blob/main/inputs/FEAT-ZD-48600/BE-06/task.code.md) · [original](https://github.com/arghya05/hobasa-backend-agent/blob/main/outputs/FEAT-ZD-48600/task.code.md) · [HTML](https://htmlpreview.github.io/?https://raw.githubusercontent.com/arghya05/hobasa-backend-agent/main/docs/FEAT-ZD-48600/BE-05_task-code.html) · [PDF](https://github.com/arghya05/hobasa-backend-agent/blob/main/docs/FEAT-ZD-48600/BE-05_task-code.pdf) |
+| 2 | `feat.stories` | Epics, stories and tasks with numbered AC, frame links, assumptions and open items (latest revision) | Requirement agent · REQ-08 | [input copy](https://github.com/arghya05/hobasa-backend-agent/blob/main/inputs/FEAT-ZD-48600/BE-06/feat.stories.md) · [original](https://github.com/arghya05/hobasa-requirement-agent/blob/main/outputs/FEAT-ZD-48600/feat.stories.md) · [HTML](https://htmlpreview.github.io/?https://raw.githubusercontent.com/arghya05/hobasa-requirement-agent/main/docs/FEAT-ZD-48600/REQ-08_feat-stories.html) · [PDF](https://github.com/arghya05/hobasa-requirement-agent/blob/main/docs/FEAT-ZD-48600/REQ-08_feat-stories.pdf) |
 
-Full brief per attempt: `brief_attempt<N>.md` (trigger event, owner answers, tool view, refusal reasons).
+The full brief the agent was given, attempt by attempt: `brief_attempt<N>.md` in this folder.
 
-## Outputs (what the agent produced)
+## Output: what the agent produced
 
-| Item | GitHub file |
-|---|---|
-| task.unit_tests | hobasa-backend-agent/outputs/FEAT-ZD-48600/task.unit_tests.md |
+| # | Output | What it is | Open |
+|---|---|---|---|
+| 1 | `task.unit_tests` | Unit tests and coverage (≥90%) | not produced (blocked) |
 
-## Code
-
-Repository `ap-aging-sample`, branch `feature/story`, commit `5d2cbb9`
+**Code:** repository [ap-aging-sample](https://github.com/arghya05/ap-aging-sample) · branch [feature/story](https://github.com/arghya05/ap-aging-sample/tree/feature/story) · commit [5d2cbb9](https://github.com/arghya05/ap-aging-sample/commit/5d2cbb9)
 
 ```
 no file changes in this step
 ```
 
+## Checks and approval
+
+| Attempt | Session | Problems found by the checks | Unsupported statements (judge) | Judge scores |
+|---|---|---|---|---|
+| 1 | new | 7 | — | — |
+| 2 | continued | 1 | 1 | {'correct': 4, 'complete': 5, 'grounded': 4, 'useful': 4} |
+| 3 | continued | 1 | 1 | — |
+| 4 | continued | 1 | — | — |
+| 5 | continued | 1 | — | — |
+| 6 | continued | 1 | — | — |
+| 7 | continued | 1 | — | — |
+| 8 | continued | 1 | — | — |
+| 9 | continued | 1 | — | — |
+
 ## How the agent worked
 
-- Approach: Attempt 3 fixes the remaining G2 refusal: the result no longer cites file:ap_aging/ci.py anywhere. The 90% coverage gate is cited from task.code, which states it. The CI outcome is cited from the CI run in this step, under tool:repo. Exact CI figures are left to the spine's CI record, as task.code does. I re-ran /usr/bin/python3 ci.py in this attempt and it passed. The tests in tests/test_overdue.py, which appears in the tool view, are unchanged. I rewrote task.unit_tests.md in full with an updated revision note. The spine had appended a tool-result line to the file; the full rewrite dropped it, on the assumption that the spine adds it again at commit, as it did for task.code.
-- Tools used: Bash (/usr/bin/python3 ci.py), Read, Write
-- Helper subagents: none
-- Connector calls: none
+- **Approach:** —
+- **Tools used:** —
+- **Helper subagents:** none
+- **Connector calls:** none
 
-## Attempts (checks before any person saw the output)
+## Files in this folder (audit trail)
 
-| Attempt | Session | Checks failed | Judge unsupported | Judge scores |
-|---|---|---|---|---|
-| 1 | new | 8 | — | — |
-| 2 | resumed | 2 | — | — |
-| 3 | resumed | 0 | 0 | {'correct': 5, 'complete': 4, 'grounded': 5, 'useful': 4} |
-
-## Improvements the independent judge suggests (non-blocking, for the people at the gate)
-
-- The tool view gives the exact CI figures ('Unit tests: 24 run, 0 failing; coverage 100.0%'), but the output never states them. It says only 'above the gate of 90%' and 'fully covered', and sends readers to the spine's CI record. Quoting the tool:repo figures would make the coverage evidence for the workbook's ≥90% target explicit at the gate. The figures are correct: test_aging.py has 3 tests and test_overdue.py has 15 + 2 + 4.
-- The revision note says attempt 1 was refused because it 'quoted CI figures that no cited item contains' and 'cited files that had not been read'. The brief available to the judge lists only the latest refusal reasons (the ci.py citation), so this history cannot be checked against any source. Either drop it or keep the note to the refusal reasons the brief records.
-- The section 3 rows for Compile and Static checks ('Pass' / 'No issues' with the new tests) are not in the tool view, which reports only tests and coverage. They hold by implication: src/ is unchanged since task.code reported compile pass and no static issues, and the static checks scan only src/ap_aging. Saying this explicitly would make the 'CI passes' claim fully traceable.
-- TK-05.2 and SA-6 suggest putting the new tests in tests/test_aging.py, and the output explains why it used the separate file tests/test_overdue.py (SA-6 allows this). It could also note that the existing test_bucket_edges in test_aging.py still leaves the '1-30' branch untested there. The new file now covers that branch.
-
-Details: `result_attempt<N>.json` (claims with sources), `checks_attempt<N>.json`, `judge_attempt<N>.json`.
+- `brief_attempt<N>.md`: the exact brief the agent received
+- `result_attempt<N>.json`: the agent's structured answer (approach, tools, claims with their sources, open questions)
+- `checks_attempt<N>.json`: what the automated guardrail checks found
+- `judge_attempt<N>.json`, `judge_brief_attempt<N>.md`: the independent judge
+- `outputs/`: the outputs as approved
